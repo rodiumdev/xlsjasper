@@ -1,0 +1,6 @@
+    
+    <columnFooter>
+        <band height="45" splitType="Stretch"> 
+            %(columnFooter)s 
+        </band>
+    </columnFooter>

@@ -1,0 +1,6 @@
+    
+    <summary>
+        <band height="79" splitType="Stretch">
+            %(summary)s
+        </band>
+    </summary>

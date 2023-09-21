@@ -1,0 +1,6 @@
+    
+    <title>
+        <band height="79" splitType="Stretch">
+            %(title)s
+        </band>
+    </title>

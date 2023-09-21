@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportta" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="173e0e44-7165-4c19-937f-82e0e2acfbb7">
+    <queryString>
+		<![CDATA[]]>
+	</queryString>
+    <background>
+        <band splitType="Stretch" />
+    </background> 
+        
+    <columnHeader>
+        <band height="61" splitType="Stretch">
+            %(columnHeader)s
+        </band>
+    </columnHeader>
+    
+    <detail>
+        <band height="125" splitType="Stretch">
+            %(detail)s
+        </band>
+    </detail>
+ 
+</jasperReport>

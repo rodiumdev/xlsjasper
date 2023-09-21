@@ -1,0 +1,6 @@
+    
+    <detail>
+        <band height="125" splitType="Stretch">
+            %(detail)s
+        </band>
+    </detail>

@@ -1,0 +1,32 @@
+report = {
+    "name": "table 1",
+    "xlsPage": "Canevas SFM 2018",
+    "title": {},
+    "pageHeader": {},
+    "columnHeader": {"title": {"row": 26, "start_column": "A", "end_column": "A"}, "grouping": {}, "columns": {"row": 26, "start_column": "A", "end_column": "S"}},
+    "details": {
+        "properties": {},
+        "components": [
+            {"type": "fields", "fields": {}},
+            {
+                "quantity": 2,
+                "type": "table",
+                "titles": {"row": 26, "start_column": "A", "end_column": "A"},
+                "groupings": {},
+                "columns": {"row": 26, "start_column": "A", "end_column": "S"},
+                "fields": {},
+            },
+            {
+                "quantity": 1,
+                "type": "subreport",
+                "titles": {"row": 26, "start_column": "A", "end_column": "A"},
+                "groupings": {},
+                "columns": {"row": 26, "start_column": "A", "end_column": "S"},
+                "fields": {},
+            },
+        ],
+    },
+    "columnFooter": {},
+    "pageFooter": {},
+    "summary": {},
+}

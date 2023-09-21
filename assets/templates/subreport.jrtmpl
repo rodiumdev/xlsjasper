@@ -1,0 +1,6 @@
+
+    <subreport>
+        <reportElement x="88" y="143" width="200" height="200" uuid="2894603f-0d5c-43cb-9291-685b32453513" />
+        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+        <subreportExpression><![CDATA["Blank_A4_Landscape_1.jasper"]]></subreportExpression>
+    </subreport>

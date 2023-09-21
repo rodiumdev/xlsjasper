@@ -1,0 +1,20 @@
+<componentElement>
+    <reportElement x="596" y="36" width="200" height="200" uuid="52f9195d-c054-4964-8f20-c789cde158f3">
+        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout" />
+        <property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH" />
+        <property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH" />
+        <property name="com.jaspersoft.studio.table.style.detail" value="Table_TD" />
+    </reportElement>
+    <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+        <datasetRun subDataset="customTable" uuid="b444f515-b0fd-41a1-b1a4-9e55c798b5ce">
+            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+        </datasetRun>
+        <jr:column width="40" uuid="2ffa7b8b-a8be-4201-acb3-9c8cb5e3b88a">
+            <jr:tableHeader style="Table_TH" height="30" />
+            <jr:tableFooter style="Table_TH" height="30" />
+            <jr:columnHeader style="Table_CH" height="30" />
+            <jr:columnFooter style="Table_CH" height="30" />
+            <jr:detailCell style="Table_TD" height="30" />
+        </jr:column>
+    </jr:table>
+</componentElement>

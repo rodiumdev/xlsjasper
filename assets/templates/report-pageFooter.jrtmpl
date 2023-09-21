@@ -1,0 +1,6 @@
+    
+    <pageFooter>
+        <band height="54" splitType="Stretch">
+            %(pageFooter)s
+        </band>
+    </pageFooter>
