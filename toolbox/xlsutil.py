@@ -3,15 +3,12 @@ import decimal
 from unidecode import unidecode
 
 
-xls_path = "C:/Programming/scripts_queries/scripts/jasper/input/"
-
-
 def generate_column_range(start_column, end_column):
     return list(map(chr, range(ord(start_column), ord(end_column) + 1)))
 
 
-def load_workbook(xls_file):
-    return openpyxl.load_workbook(xls_path + xls_file, data_only=True)
+def load_workbook(xls_file_path):
+    return openpyxl.load_workbook(xls_file_path, data_only=True)
 
 
 def dropzeros(number):
@@ -41,7 +38,7 @@ def load_cell_string(workbook, page, row, col):
 
 def read_cell(workbook, page, row, col):
     workbook_page = workbook.active = workbook[page]
-    cell = workbook_page[col + row]
+    cell = workbook_page[col + str(row)]
 
     if cell.value is None:
         return ""

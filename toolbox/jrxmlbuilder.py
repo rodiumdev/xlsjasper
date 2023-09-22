@@ -1,11 +1,36 @@
+import uuid
 from toolbox import xmlutil
 from toolbox import xlsutil
 from toolbox import utils
 
+PIXEL_FACTOR = 11 / 1.8
 
-def build_values(type, value):
-    template = "value-" + type + ".jrtmpl"
-    return xmlutil.template_to_string % {}
+
+def get_default_parameters(position, value):
+    parameters = {}
+    parameters["x"] = position
+    parameters["y"] = 0
+    parameters["width"] = int(len(value) * PIXEL_FACTOR)
+    parameters["height"] = 30
+    parameters["v_align"] = "Middle"
+    parameters["h_align"] = "Center"
+    parameters["font"] = 11
+    parameters["uuidv4"] = uuid.uuid4()
+    parameters["border"] = 0
+
+    return parameters
+
+
+def build_values(value_type, position, value, parameters=False):
+    # merge default parameters with custom parameters
+    default_parameters = get_default_parameters(position, value)
+    parameters = parameters if parameters else {}
+    parameters = {**default_parameters, **parameters}
+    parameters["value"] = value
+
+    # build template
+    template = "value-" + value_type + ".jrtmpl"
+    return xmlutil.template_to_string(template) % parameters
 
 
 def build_column():
@@ -24,53 +49,74 @@ def build_parameters():
     pass
 
 
-def build_report(report_structure):
-    # properties
-    output_path = "C:/Programming/scripts_queries/scripts/jasper/output/"
+def build_column_header(column_header, workbook, page):
+    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    built_column_headers = ""
+    position = 0
+    param = column_header.get("param", {})
+    print(xls_column_range)
+    for xls_column in xls_column_range:
+        value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
+        built_column_headers += build_values("static", position, value, param)
+        position += int(len(value) * PIXEL_FACTOR)
 
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
+
+
+def build_column_header_grouping(column_header, workbook, page):
+    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    built_column_headers = ""
+    position = 0
+    param = column_header.get("param", {})
+
+    grouped_columns = []
+
+    for loop_index, xls_column in enumerate(xls_column_range):
+        if xls_column == "":
+            grouped_columns.append(xls_column)
+        else:
+            value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
+            built_column_headers += build_values("static", position, value, param)
+            position += int(len(value) * PIXEL_FACTOR)
+
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
+
+
+def build_column_header_single(column_header, workbook, page):
+    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    built_column_headers = ""
+    position = 0
+    param = column_header.get("param", {})
+    for xls_column in xls_column_range:
+        value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
+        built_column_headers += build_values("static", position, value, param)
+        position += int(len(value) * PIXEL_FACTOR)
+
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
+
+
+def build_report(report_structure, workbook):
+    # file paths
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/"
+
+    # instatiation
     report = ""
-    report_template = xmlutil.template_to_string("report.jrtmpl")
-
-    # initialise subtemplate
-    title_template = page_header_template = column_header_template = details_template = ""
-    column_footer_template = page_footer_template = summary_template = ""
 
     if "title" in report_structure and not utils.is_empty(report_structure.get("title")):
-        title_template = xmlutil.template_to_string("report-title.jrtmpl")
-        report += title_template
-
-    if "pageHeader" in report_structure and not utils.is_empty(report_structure.get("pageHeader")):
         pass
 
-    if "columnHeader" in report_structure and not utils.is_empty(report_structure.get("columnHeader")):
-        col_header_template = xmlutil.template_to_string(
-            "report-columnHeader.jrtmpl")
-        col_header = report_structure.get("columnHeader")
+    if "page-header" in report_structure and not utils.is_empty(report_structure.get("page-header")):
+        pass
 
-        # build title headings
-        if "titles" in col_header and not utils.is_empty(col_header.get("titles")):
-            col_header_title = col_header.get("titles")
-            col_header_title_col_range = xlsutil.generate_column_range(
-                col_header_title.get("start_col"), col_header_title.get("end_col"))
-            for col_header_title_col in col_header_title_col_range:
-                pass
+    if "column-header" in report_structure and not utils.is_empty(report_structure.get("column-header")):
+        column_header = report_structure.get("column-header")
+        report += build_column_header(column_header, workbook, report_structure.get("page"))
 
-        report += column_header_template
+    output = xmlutil.template_to_string("report.jrtmpl") % {"report": report}
+    utils.print_to_file(output_path + report_structure.get("name", "report") + ".jrxml", output)
 
-    # if "detail" in report_structure and not utils.is_empty(report_structure.get("detail")):
-    #     details_template = xmlutil.template_to_string("report-detail.jrtmpl")
-    #     report += details_template
 
-    # if "columnFooter" in report_structure and not utils.is_empty(report_structure.get("columnFooter")):
-    #     pass
-
-    # if "pageFooter" in report_structure and not utils.is_empty(report_structure.get("pageFooter")):
-    #     pass
-
-    # if "summary" in report_structure and not utils.is_empty(report_structure.get("summary")):
-    #     pass
-
-    output = report_template % {"report": report}
-
-    utils.print_to_file(
-        output_path + report_structure.get("name", "report") + ".jrxml", output)
+def build(file_name, structure):
+    input_path = "C:/Programming/scripts_queries/scripts/xlsjasper/input/"
+    workbook = xlsutil.load_workbook(input_path + file_name)
+    build_report(structure, workbook)

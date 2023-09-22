@@ -30,3 +30,21 @@ report = {
     "pageFooter": {},
     "summary": {},
 }
+
+
+    # if "detail" in report_structure and not utils.is_empty(report_structure.get("detail")):
+    #     details_template = xmlutil.template_to_string("report-detail.jrtmpl")
+    #     report += details_template
+
+    # if "columnFooter" in report_structure and not utils.is_empty(report_structure.get("columnFooter")):
+    #     pass
+
+    # if "pageFooter" in report_structure and not utils.is_empty(report_structure.get("pageFooter")):
+    #     pass
+
+    # if "summary" in report_structure and not utils.is_empty(report_structure.get("summary")):
+    #     pass
+
+    # initialise subtemplate
+    # title_template = page_header_template = column_header_template = details_template = ""
+    # column_footer_template = page_footer_template = summary_template = ""

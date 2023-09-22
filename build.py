@@ -1,17 +1,13 @@
 from toolbox import jrxmlbuilder
 
-target_xls_file = "sfm.xls"
+TARGET_XLS_FILE = "sfm.xlsx"
 
 report = {
     "name": "sfm",
-    "xlsPage": "Canevas SFM 2018",
+    "page": "Canevas SFM 2018",
     "title": {},
-    "pageHeader": {},
-    "columnHeader": {
-        "titles": {"row": 26, "start_col": "A", "end_col": "A", "type": "static"},
-        "groupings": {"row": 26, "start_col": "A", "end_col": "A", "type": "static"},
-        "columns": {"row": 26, "start_col": "A", "end_col": "A", "type": "static"}
-    },
+    "page-header": {},
+    "column-header": [{"group_for": 1, "row": 65, "start_col": "A", "end_col": "S", "param": {"border": 1}}, {"row": 65, "start_col": "A", "end_col": "S", "param": {"border": 1}}],
     "detail": {
         "properties": {},
         "components": [
@@ -26,5 +22,5 @@ report = {
 
 print("Building Reports .....")
 print("started")
-jrxmlbuilder.build_report(report)
+jrxmlbuilder.build(TARGET_XLS_FILE, report)
 print("done")
