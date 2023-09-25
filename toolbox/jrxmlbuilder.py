@@ -3,8 +3,27 @@ from toolbox import xmlutil
 from toolbox import xlsutil
 from toolbox import utils
 
-PIXEL_FACTOR = 11 / 1.7
+INPUT_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/input/"
+PIXEL_FACTOR = 11 / 1.6
 DEFAULT_HEIGHT = 30
+
+
+def expand_column(columns):
+    column_start, column_end = columns.split(":")
+    if len(column_end) < 2:
+        return xlsutil.generate_column_range(column_start, column_end)
+    else:
+        column_range = xlsutil.generate_column_range(column_start, "Z")
+        end_range = xlsutil.generate_column_range("A", column_end[0])
+        for first_charecter in end_range:
+            for second_charecter in xlsutil.generate_column_range("A", "Z"):
+                res = first_charecter + second_charecter
+                if res != column_end:
+                    column_range.append(res)
+                else:
+                    break
+        column_range.append(column_end)
+        return column_range
 
 
 def get_grouping_value_and_width(xls_column_range, workbook, page, row):
@@ -35,7 +54,7 @@ def get_template_parameters(x_position, y_position, width, parameters=False):
     template_parameters["h_align"] = "Center"
     template_parameters["font"] = 11
     template_parameters["uuidv4"] = uuid.uuid4()
-    template_parameters["border"] = 0
+    template_parameters["border"] = 1
 
     parameters = {**template_parameters, **parameters}
 
@@ -65,7 +84,7 @@ def build_values(value_type, value, parameters=False):
 
 
 def build_column_header_grouping(column_header, workbook, page, y_position):
-    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    xls_column_range = expand_column(column_header.get("col"))
     groupings = get_grouping_value_and_width(xls_column_range, workbook, page, column_header.get("row"))
     custom_parameter = column_header.get("param", {})
     built_column_headers = ""
@@ -82,7 +101,7 @@ def build_column_header_grouping(column_header, workbook, page, y_position):
 
 
 def build_column_header_basic(column_header, workbook, page, y_position):
-    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    xls_column_range = expand_column(column_header.get("col"))
     custom_parameter = column_header.get("param", {})
     built_column_headers = ""
     position = 0
@@ -110,6 +129,12 @@ def build_column_header(column_headers, workbook, page):
     return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers, "height": height}
 
 
+def build_details():
+    built_column_details = ""
+    height = DEFAULT_HEIGHT - 5
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_details, "height": height}
+
+
 def build_report(report_structure, workbook):
     # file paths
     output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/"
@@ -132,6 +157,6 @@ def build_report(report_structure, workbook):
 
 
 def build(file_name, structure):
-    input_path = "C:/Programming/scripts_queries/scripts/xlsjasper/input/"
+    input_path = INPUT_PATH
     workbook = xlsutil.load_workbook(input_path + file_name)
     build_report(structure, workbook)
