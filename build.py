@@ -7,7 +7,7 @@ report = {
     "page": "Canevas SFM 2018",
     "title": {},
     "page-header": {},
-    "column-header": [{"group_for": 1, "row": 65, "start_col": "A", "end_col": "S", "param": {"border": 1}}, {"row": 65, "start_col": "A", "end_col": "S", "param": {"border": 1}}],
+    "column-header": [{"group": True, "row": 64, "start_col": "A", "end_col": "A", "param": {"border": 1}}, {"group": True, "row": 65, "start_col": "A", "end_col": "S", "param": {"border": 1}}, {"row": 66, "start_col": "A", "end_col": "S", "param": {"border": 1}}],
     "detail": {
         "properties": {},
         "components": [

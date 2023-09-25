@@ -3,96 +3,111 @@ from toolbox import xmlutil
 from toolbox import xlsutil
 from toolbox import utils
 
-PIXEL_FACTOR = 11 / 1.8
+PIXEL_FACTOR = 11 / 1.7
+DEFAULT_HEIGHT = 30
 
 
-def get_default_parameters(position, value):
-    parameters = {}
-    parameters["x"] = position
-    parameters["y"] = 0
-    parameters["width"] = int(len(value) * PIXEL_FACTOR)
-    parameters["height"] = 30
-    parameters["v_align"] = "Middle"
-    parameters["h_align"] = "Center"
-    parameters["font"] = 11
-    parameters["uuidv4"] = uuid.uuid4()
-    parameters["border"] = 0
+def get_grouping_value_and_width(xls_column_range, workbook, page, row):
+    grouping_value_and_width = []
+    active_group = 0
+    for xls_column in xls_column_range:
+        value = xlsutil.read_cell(workbook, page, row, xls_column)
+        bootom_row_value = xlsutil.read_cell(workbook, page, row + 1, xls_column)
+        if value == "":
+            grouping_value_and_width[active_group]["width"] += int(len(bootom_row_value) * PIXEL_FACTOR)
+        else:
+            value_and_width = {"value": value, "width": int(len(bootom_row_value) * PIXEL_FACTOR)}
+            grouping_value_and_width.append(value_and_width)
+            active_group = len(grouping_value_and_width) - 1
+
+    return grouping_value_and_width
+
+
+def get_template_parameters(x_position, y_position, width, parameters=False):
+    parameters = parameters if parameters else {}
+
+    template_parameters = {}
+    template_parameters["x"] = x_position
+    template_parameters["y"] = y_position
+    template_parameters["width"] = width
+    template_parameters["height"] = DEFAULT_HEIGHT
+    template_parameters["v_align"] = "Middle"
+    template_parameters["h_align"] = "Center"
+    template_parameters["font"] = 11
+    template_parameters["uuidv4"] = uuid.uuid4()
+    template_parameters["border"] = 0
+
+    parameters = {**template_parameters, **parameters}
 
     return parameters
 
 
-def build_values(value_type, position, value, parameters=False):
-    # merge default parameters with custom parameters
-    default_parameters = get_default_parameters(position, value)
-    parameters = parameters if parameters else {}
-    parameters = {**default_parameters, **parameters}
+def build_values(value_type, value, parameters=False):
     parameters["value"] = value
-
-    # build template
     template = "value-" + value_type + ".jrtmpl"
     return xmlutil.template_to_string(template) % parameters
 
 
-def build_column():
-    pass
+# def build_column():
+#     pass
 
 
-def build_table():
-    pass
+# def build_table():
+#     pass
 
 
-def build_subreport():
-    pass
+# def build_subreport():
+#     pass
 
 
-def build_parameters():
-    pass
+# def build_parameters():
+#     pass
 
 
-def build_column_header(column_header, workbook, page):
+def build_column_header_grouping(column_header, workbook, page, y_position):
     xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    groupings = get_grouping_value_and_width(xls_column_range, workbook, page, column_header.get("row"))
+    custom_parameter = column_header.get("param", {})
     built_column_headers = ""
     position = 0
-    param = column_header.get("param", {})
-    print(xls_column_range)
+
+    for group in groupings:
+        value = group.get("value", "")
+        width = group.get("width", 0)
+        template_parameters = get_template_parameters(position, y_position, width, custom_parameter)
+        built_column_headers += build_values("static", value, template_parameters)
+        position += group.get("width", 0)
+
+    return built_column_headers
+
+
+def build_column_header_basic(column_header, workbook, page, y_position):
+    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+    custom_parameter = column_header.get("param", {})
+    built_column_headers = ""
+    position = 0
+
     for xls_column in xls_column_range:
         value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
-        built_column_headers += build_values("static", position, value, param)
+        width = int(len(value) * PIXEL_FACTOR)
+        template_parameters = get_template_parameters(position, y_position, width, custom_parameter)
+        built_column_headers += build_values("static", value, template_parameters)
         position += int(len(value) * PIXEL_FACTOR)
 
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
+    return built_column_headers
 
 
-def build_column_header_grouping(column_header, workbook, page):
-    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
+def build_column_header(column_headers, workbook, page):
     built_column_headers = ""
-    position = 0
-    param = column_header.get("param", {})
-
-    grouped_columns = []
-
-    for loop_index, xls_column in enumerate(xls_column_range):
-        if xls_column == "":
-            grouped_columns.append(xls_column)
+    height = DEFAULT_HEIGHT * len(column_headers)
+    for loop_index, column_header in enumerate(column_headers):
+        y_position = loop_index * DEFAULT_HEIGHT
+        if column_header.get("group", False):
+            built_column_headers += build_column_header_grouping(column_header, workbook, page, y_position)
         else:
-            value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
-            built_column_headers += build_values("static", position, value, param)
-            position += int(len(value) * PIXEL_FACTOR)
+            built_column_headers += build_column_header_basic(column_header, workbook, page, y_position)
 
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
-
-
-def build_column_header_single(column_header, workbook, page):
-    xls_column_range = xlsutil.generate_column_range(column_header.get("start_col"), column_header.get("end_col"))
-    built_column_headers = ""
-    position = 0
-    param = column_header.get("param", {})
-    for xls_column in xls_column_range:
-        value = xlsutil.read_cell(workbook, page, column_header.get("row"), xls_column)
-        built_column_headers += build_values("static", position, value, param)
-        position += int(len(value) * PIXEL_FACTOR)
-
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers}
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers, "height": height}
 
 
 def build_report(report_structure, workbook):
