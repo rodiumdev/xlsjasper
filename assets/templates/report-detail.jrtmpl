@@ -1,6 +1,6 @@
     
     <detail>
-        <band height="125" splitType="Stretch">
+        <band height="%(height)s" splitType="Stretch">
             %(detail)s
         </band>
     </detail>

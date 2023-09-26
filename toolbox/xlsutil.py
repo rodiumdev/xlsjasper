@@ -44,3 +44,13 @@ def read_cell(workbook, page, row, col):
         return ""
     else:
         return unidecode(cell.value)  # .encode('UTF-8')
+
+
+def read_cell(workbook, page, row, col):
+    workbook_page = workbook.active = workbook[page]
+    cell = workbook_page[col + str(row)]
+
+    if cell.value is None:
+        return ""
+    else:
+        return unidecode(cell.value)  # .encode('UTF-8')

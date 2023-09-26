@@ -129,10 +129,96 @@ def build_column_header(column_headers, workbook, page):
     return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers, "height": height}
 
 
-def build_details():
+def get_field_names(workbook, page, row, xls_columns):
+    col_range = expand_column(xls_columns)
+    filed_names = {}
+    active_value = ""
+    for xls_column in col_range:
+        value = xlsutil.read_cell(workbook, page, row, xls_column)
+        if value != "":
+            active_value = value
+        filed_names[xls_column] = utils.to_java_variable(active_value)
+    return filed_names
+
+
+def get_field_width(workbook, page, row, xls_columns):
+    col_range = expand_column(xls_columns)
+    filed_widths = []
+    for xls_column in col_range:
+        value = xlsutil.read_cell(workbook, page, row, xls_column)
+        filed_widths.append(int(len(value) * PIXEL_FACTOR))
+    return filed_widths
+
+
+def expand_fields(fields, field_names):
+    expanded_fields = []
+    value_field = "$F{%(value)s}"
+
+    for field in fields:
+        if "'" in field:
+            value = field.replace("'", "")
+            expanded_fields.append(value_field % {"value": value})
+
+        if ":" in field and ("|" not in field):
+            col_list = expand_column(field)
+            for col in col_list:
+                value = "%(" + col + ")s"
+                value = value % field_names
+                expanded_fields.append(value_field % {"value": value})
+
+        if ":" in field and "|" in field:
+            cols, modifier = field.split("|")
+            col_list = expand_column(cols)
+            modifier_list = modifier.split(",")
+            for col in col_list:
+                for modifier in modifier_list:
+                    value = "%(" + col + ")s" + modifier.capitalize()
+                    value = value % field_names
+                    expanded_fields.append(value_field % {"value": value})
+
+        if ":" not in field and "'" not in field:
+            operand = field[1]
+            col_list = field.split(operand)
+            modified_field = []
+            for col in col_list:
+                value = "%(" + col + ")s"
+                value = value % field_names
+                modified_field.append(value_field % {"value": value})
+            expanded_fields.append(operand.join(modified_field))
+    return expanded_fields
+
+
+def build_fields(workbook, page, component, y_position, parameters=False):
+    field_name = get_field_names(workbook, page, component.get("name_row"), component.get("col"))
+    width_row = component.get("width_row") if "width_row" in component else component.get("name_row")
+    field_width = get_field_width(workbook, page, width_row, component.get("col"))
+    expanded_fields = expand_fields(component.get("fields", []), field_name)
+
+    built_fields = ""
+    position = 0
+
+    for loop_index, field in enumerate(expanded_fields):
+        template_parameters = get_template_parameters(position, y_position, field_width[loop_index], parameters=parameters)
+        built_fields += build_values("field-complex", field, template_parameters)
+        position += field_width[loop_index]
+    return built_fields
+
+
+def build_detail(detail, workbook, page):
     built_column_details = ""
     height = DEFAULT_HEIGHT - 5
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_details, "height": height}
+
+    for loop_index, component in enumerate(detail.get("components", [])):
+        if component.get("type") == "fields":
+            param = detail.get("param", {"height": height})
+            y_position = loop_index * height
+            built_column_details += build_fields(workbook, page, component, y_position, param)
+        if component.get("type") == "subreport":
+            pass
+        if component.get("type") == "table":
+            pass
+
+    return xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_column_details, "height": height}
 
 
 def build_report(report_structure, workbook):
@@ -151,6 +237,10 @@ def build_report(report_structure, workbook):
     if "column-header" in report_structure and not utils.is_empty(report_structure.get("column-header")):
         column_header = report_structure.get("column-header")
         report += build_column_header(column_header, workbook, report_structure.get("page"))
+
+    if "detail" in report_structure and not utils.is_empty(report_structure.get("detail")):
+        detail = report_structure.get("detail")
+        report += build_detail(detail, workbook, report_structure.get("page"))
 
     output = xmlutil.template_to_string("report.jrtmpl") % {"report": report}
     utils.print_to_file(output_path + report_structure.get("name", "report") + ".jrxml", output)

@@ -9,9 +9,9 @@ report = {
     "page-header": {},
     "column-header": [{"group": True, "row": 64, "col": "A:A"}, {"group": True, "row": 65, "col": "A:S"}, {"row": 66, "col": "A:S"}],
     "detail": {
-        "parameters": {"border:": 1},
+        "param": {},
         "components": [
-            {"type": "fields", "row": 67, "fields": ["label", "B:C", "sum|E:G-volume,valeur", "A:B"]},
+            {"type": "fields", "name_row": 65, "width_row": 66, "col": "A:S", "fields": ["'label", "B:C", "D:E|volume,valeur", "A+B+C"]},
         ],
     },
     "columnFooter": {},
