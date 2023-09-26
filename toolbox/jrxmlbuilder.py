@@ -210,7 +210,8 @@ def build_detail(detail, workbook, page):
 
     for loop_index, component in enumerate(detail.get("components", [])):
         if component.get("type") == "fields":
-            param = detail.get("param", {"height": height})
+            param = detail.get("param", {})
+            param["height"] = height
             y_position = loop_index * height
             built_column_details += build_fields(workbook, page, component, y_position, param)
         if component.get("type") == "subreport":
