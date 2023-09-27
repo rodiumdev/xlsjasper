@@ -1,5 +1,5 @@
-import openpyxl
 import decimal
+import openpyxl
 from unidecode import unidecode
 
 
@@ -29,16 +29,6 @@ def load_cell(workbook, page, row, col):
 def load_cell_string(workbook, page, row, col):
     workbook_page = workbook.active = workbook[page]
     cell = workbook_page[col + row]
-
-    if cell.value is None:
-        return ""
-    else:
-        return unidecode(cell.value)  # .encode('UTF-8')
-
-
-def read_cell(workbook, page, row, col):
-    workbook_page = workbook.active = workbook[page]
-    cell = workbook_page[col + str(row)]
 
     if cell.value is None:
         return ""

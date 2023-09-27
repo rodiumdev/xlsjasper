@@ -13,15 +13,25 @@ def expand_column(columns):
     if len(column_end) < 2:
         return xlsutil.generate_column_range(column_start, column_end)
     else:
-        column_range = xlsutil.generate_column_range(column_start, "Z")
-        end_range = xlsutil.generate_column_range("A", column_end[0])
+        column_range = []
+        if len(column_start) < 2:
+            first_charecter_start = "A"
+            second_charecter_start = "A"
+            column_range = xlsutil.generate_column_range(column_start, "Z")
+        else:
+            first_charecter_start = column_start[0]
+            second_charecter_start = column_start[1]
+
+        end_range = xlsutil.generate_column_range(first_charecter_start, column_end[0])
+
         for first_charecter in end_range:
-            for second_charecter in xlsutil.generate_column_range("A", "Z"):
+            for second_charecter in xlsutil.generate_column_range(second_charecter_start, "Z"):
                 res = first_charecter + second_charecter
                 if res != column_end:
                     column_range.append(res)
                 else:
                     break
+            second_charecter_start = "A"
         column_range.append(column_end)
         return column_range
 
@@ -126,7 +136,10 @@ def build_column_header(column_headers, workbook, page):
         else:
             built_column_headers += build_column_header_basic(column_header, workbook, page, y_position)
 
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {"columnHeader": built_column_headers, "height": height}
+    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {
+        "columnHeader": built_column_headers,
+        "height": height,
+    }
 
 
 def get_field_names(workbook, page, row, xls_columns):
@@ -170,27 +183,46 @@ def expand_fields(fields, field_names):
             cols, modifier = field.split("|")
             col_list = expand_column(cols)
             modifier_list = modifier.split(",")
-            for col in col_list:
-                for modifier in modifier_list:
-                    value = "%(" + col + ")s" + modifier.capitalize()
-                    value = value % field_names
-                    expanded_fields.append(value_field % {"value": value})
+            for loop_index, col in enumerate(col_list):
+                modifier_index = loop_index % (len(modifier_list))
+                value = "%(" + col + ")s" + modifier_list[modifier_index].capitalize()
+                value = value % field_names
+                expanded_fields.append(value_field % {"value": value})
 
         if ":" not in field and "'" not in field:
-            operand = field[1]
-            col_list = field.split(operand)
-            modified_field = []
-            for col in col_list:
-                value = "%(" + col + ")s"
-                value = value % field_names
-                modified_field.append(value_field % {"value": value})
-            expanded_fields.append(operand.join(modified_field))
+            operands = ["+", "-", "*", "/", "%"]
+            operand = ""
+            for ops in operands:
+                if ops in field:
+                    operand = ops
+
+            if "|" in field:
+                formula, modifiers = field.split("|")
+                col_list = formula.split(operand)
+                modifier_list = modifiers.split(",")
+                for modifier in modifier_list:
+                    modified_field = []
+                    for col in col_list:
+                        value = "%(" + col + ")s"
+                        value = value % field_names
+                        modified_field.append(value_field % {"value": value + modifier.capitalize()})
+                    expanded_fields.append(operand.join(modified_field))
+            else:
+                col_list = field.split(operand)
+                modified_field = []
+                for col in col_list:
+                    value = "%(" + col + ")s"
+                    value = value % field_names
+                    modified_field.append(value_field % {"value": value})
+                expanded_fields.append(operand.join(modified_field))
+
     return expanded_fields
 
 
 def build_fields(workbook, page, component, y_position, parameters=False):
     field_name = get_field_names(workbook, page, component.get("name_row"), component.get("col"))
     width_row = component.get("width_row") if "width_row" in component else component.get("name_row")
+
     field_width = get_field_width(workbook, page, width_row, component.get("col"))
     expanded_fields = expand_fields(component.get("fields", []), field_name)
 
@@ -198,7 +230,9 @@ def build_fields(workbook, page, component, y_position, parameters=False):
     position = 0
 
     for loop_index, field in enumerate(expanded_fields):
-        template_parameters = get_template_parameters(position, y_position, field_width[loop_index], parameters=parameters)
+        template_parameters = get_template_parameters(
+            position, y_position, field_width[loop_index], parameters=parameters
+        )
         built_fields += build_values("field-complex", field, template_parameters)
         position += field_width[loop_index]
     return built_fields

@@ -53,13 +53,16 @@ workbook = xlsutil.load_workbook(INPUT_PATH + TARGET_XLS_FILE)
 # get_field_names = jrxmlbuilder.get_field_names(workbook, PAGE, 65, "A:E")
 # print(get_field_names)
 
-print("\n\n")
-print("build_fields")
-build_fields = jrxmlbuilder.build_fields(workbook, PAGE, {"type": "fields", "name_row": 65, "width_row": 66, "col": "A:S", "fields": ["'label", "B:C", "D:E|volume,valuer", "A+B+C"]}, 0)
-print(build_fields)
+# print("\n\n")
+# print("build_fields")
+# build_fields = jrxmlbuilder.build_fields(workbook, PAGE, {"type": "fields", "name_row": 65, "width_row": 66, "col": "A:S", "fields": ["'label", "B:C", "D:E|volume,valuer", "A+B+C"]}, 0)
+# print(build_fields)
 
 # print("\n\n")
 # print("expand_fields")
 # expand_fields = jrxmlbuilder.expand_fields(["'label", "A:B", "C:E|volume,valeur", "A+B+C"])
 # # expand_fields = jrxmlbuilder.expand_fields(["'label"])
 # print(expand_fields)
+
+
+print(jrxmlbuilder.expand_column("BA:DE"))

@@ -23,6 +23,6 @@ def remove_accents(input_str):
 
 
 def to_java_variable(variable):
-    variable = re.sub(r"\([^)]*\)", "", variable).replace("_", "").replace("-", "").strip().split(" ")
+    variable = re.sub(r"\([^)]*\)|\([^)]*", "", variable).replace("_", "").replace("-", "").strip().split(" ")
     capitalized_words = [word.capitalize() for word in variable[1:]]
     return remove_accents(variable[0].lower() + "".join(capitalized_words))
