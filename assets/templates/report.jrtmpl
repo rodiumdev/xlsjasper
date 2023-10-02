@@ -7,5 +7,10 @@
     <background>
         <band splitType="Stretch" />
     </background> 
+    
+    %(parameters)s 
+    
+    %(fields)s 
+
     %(report)s 
 </jasperReport>

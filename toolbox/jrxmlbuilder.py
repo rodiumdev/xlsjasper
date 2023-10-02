@@ -238,22 +238,36 @@ def build_fields(workbook, page, component, y_position, parameters=False):
     return built_fields
 
 
+def build_subreport(report_structure, workbook, y_position, height):
+    build_report(report_structure, workbook)
+    target_parameter = utils.to_java_variable(report_structure["name"])
+    default_parameters = {
+        "height": height,
+        "target_parameter": target_parameter,
+        "data_source": target_parameter + "Source",
+    }
+    template_parameters = get_template_parameters(0, y_position, 1920, parameters=default_parameters)
+    return xmlutil.template_to_string("subreport.jrtmpl") % template_parameters
+
+
 def build_detail(detail, workbook, page):
-    built_column_details = ""
+    built_details = ""
     height = DEFAULT_HEIGHT - 5
+    detail_height = len(detail.get("components", [])) * height
 
     for loop_index, component in enumerate(detail.get("components", [])):
+        y_position = loop_index * height
         if component.get("type") == "fields":
             param = detail.get("param", {})
             param["height"] = height
-            y_position = loop_index * height
-            built_column_details += build_fields(workbook, page, component, y_position, param)
+            built_details += build_fields(workbook, page, component, y_position, param)
         if component.get("type") == "subreport":
-            pass
+            built_details += build_subreport(component.get("structure", {}), workbook, y_position, height)
+
         if component.get("type") == "table":
             pass
 
-    return xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_column_details, "height": height}
+    return xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_details, "height": detail_height}
 
 
 def build_report(report_structure, workbook):
@@ -264,9 +278,6 @@ def build_report(report_structure, workbook):
     report = ""
 
     if "title" in report_structure and not utils.is_empty(report_structure.get("title")):
-        pass
-
-    if "page-header" in report_structure and not utils.is_empty(report_structure.get("page-header")):
         pass
 
     if "column-header" in report_structure and not utils.is_empty(report_structure.get("column-header")):

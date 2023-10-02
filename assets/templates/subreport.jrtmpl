@@ -1,6 +1,8 @@
 
     <subreport>
-        <reportElement x="88" y="143" width="200" height="200" uuid="2894603f-0d5c-43cb-9291-685b32453513" />
-        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-        <subreportExpression><![CDATA["Blank_A4_Landscape_1.jasper"]]></subreportExpression>
+        <reportElement x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s">
+        	<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</reportElement>
+        <dataSourceExpression><![CDATA[$P{%(data_source)s}]]></dataSourceExpression>
+        <subreportExpression><![CDATA[$P{%(target_parameter)s}]]></subreportExpression>
     </subreport>
