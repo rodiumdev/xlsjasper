@@ -142,6 +142,35 @@ def build_column_header(column_headers, workbook, page):
     }
 
 
+def expand_data_type(data_types, field_names):
+    expanded_data_type = []
+
+    for field_and_type in data_types:
+        field, data_type = field_and_type.split("->")
+        if "'" in field:
+            value = field.replace("'", "")
+            expanded_data_type.append(xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value})
+
+        if ":" in field and ("|" not in field):
+            col_list = expand_column(field)
+            for col in col_list:
+                value = "%(" + col + ")s"
+                value = value % field_names
+                expanded_data_type.append(value_field % {"name": value})
+
+        if ":" in field and "|" in field:
+            cols, modifier = field.split("|")
+            col_list = expand_column(cols)
+            modifier_list = modifier.split(",")
+            for loop_index, col in enumerate(col_list):
+                modifier_index = loop_index % (len(modifier_list))
+                value = "%(" + col + ")s" + modifier_list[modifier_index].capitalize()
+                value = value % field_names
+                expanded_data_type.append(value_field % {"name": value})
+
+    return expanded_data_type
+
+
 def get_field_names(workbook, page, row, xls_columns):
     col_range = expand_column(xls_columns)
     filed_names = {}
