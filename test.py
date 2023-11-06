@@ -48,10 +48,10 @@ workbook = xlsutil.load_workbook(INPUT_PATH + TARGET_XLS_FILE)
 # build_column_header = jrxmlbuilder.build_column_header([{"group": True, "row": 65, "col":"A:S", "param": {"border": 1}}, {"row": 26, "col":"A:S", "param": {"border": 1}}], workbook, PAGE)
 # print(build_column_header)
 
-# print("\n\n")
-# print("get_field_names")
-# get_field_names = jrxmlbuilder.get_field_names(workbook, PAGE, 65, "A:E")
-# print(get_field_names)
+print("\n\n")
+print("get_field_names")
+get_field_names = jrxmlbuilder.get_field_names(workbook, PAGE, 65, "A:AK")
+print(get_field_names)
 
 # print("\n\n")
 # print("build_fields")
@@ -64,5 +64,19 @@ workbook = xlsutil.load_workbook(INPUT_PATH + TARGET_XLS_FILE)
 # # expand_fields = jrxmlbuilder.expand_fields(["'label"])
 # print(expand_fields)
 
+print("\n\n")
+print("expand_data_type")
+expand_data_type = jrxmlbuilder.expand_data_type(
+    [
+        "'label->string",
+        "B:I|volume,valeur->int",
+        "L:Q|volume,valeur->int",
+        "T:Y|volume,valeur->int",
+        "AB:AG|volume,valeur->int",
+    ],
+    get_field_names,
+)
+print(expand_data_type)
 
-print(jrxmlbuilder.expand_column("BA:DE"))
+
+# print(jrxmlbuilder.expand_column("BA:DE"))

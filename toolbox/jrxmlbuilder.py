@@ -156,7 +156,9 @@ def expand_data_type(data_types, field_names):
             for col in col_list:
                 value = "%(" + col + ")s"
                 value = value % field_names
-                expanded_data_type.append(value_field % {"name": value})
+                expanded_data_type.append(
+                    xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                )
 
         if ":" in field and "|" in field:
             cols, modifier = field.split("|")
@@ -166,7 +168,9 @@ def expand_data_type(data_types, field_names):
                 modifier_index = loop_index % (len(modifier_list))
                 value = "%(" + col + ")s" + modifier_list[modifier_index].capitalize()
                 value = value % field_names
-                expanded_data_type.append(value_field % {"name": value})
+                expanded_data_type.append(
+                    xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                )
 
     return expanded_data_type
 
