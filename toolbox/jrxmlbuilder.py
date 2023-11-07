@@ -143,22 +143,20 @@ def build_column_header(column_headers, workbook, page):
 
 
 def expand_data_type(data_types, field_names):
-    expanded_data_type = []
+    expanded_data_type = ""
 
     for field_and_type in data_types:
         field, data_type = field_and_type.split("->")
         if "'" in field:
             value = field.replace("'", "")
-            expanded_data_type.append(xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value})
+            expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
 
         if ":" in field and ("|" not in field):
             col_list = expand_column(field)
             for col in col_list:
                 value = "%(" + col + ")s"
                 value = value % field_names
-                expanded_data_type.append(
-                    xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
-                )
+                expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
 
         if ":" in field and "|" in field:
             cols, modifier = field.split("|")
@@ -168,11 +166,14 @@ def expand_data_type(data_types, field_names):
                 modifier_index = loop_index % (len(modifier_list))
                 value = "%(" + col + ")s" + modifier_list[modifier_index].capitalize()
                 value = value % field_names
-                expanded_data_type.append(
-                    xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
-                )
+                expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
 
     return expanded_data_type
+
+
+def declare_fields(workbook, page, component):
+    field_names = get_field_names(workbook, page, component.get("name_row"), component.get("col"))
+    return expand_data_type(component.get("dataType", []), field_names)
 
 
 def get_field_names(workbook, page, row, xls_columns):
@@ -273,20 +274,26 @@ def build_fields(workbook, page, component, y_position, parameters=False):
 
 def build_subreport(report_structure, workbook, y_position, height):
     build_report(report_structure, workbook)
-    target_parameter = utils.to_java_variable(report_structure["name"])
+    target_parameter = utils.to_java_variable_cap(report_structure["name"])
     default_parameters = {
         "height": height,
         "target_parameter": target_parameter,
         "data_source": target_parameter + "Source",
     }
     template_parameters = get_template_parameters(0, y_position, 1920, parameters=default_parameters)
-    return xmlutil.template_to_string("subreport.jrtmpl") % template_parameters
+    return (
+        xmlutil.template_to_string("subreport.jrtmpl") % template_parameters,
+        xmlutil.template_to_string("parameter-subreport.jrtmpl")
+        % {"name": default_parameters.get("target_parameter"), "nameSource": default_parameters.get("data_source")},
+    )
 
 
 def build_detail(detail, workbook, page):
     built_details = ""
     height = DEFAULT_HEIGHT - 5
     detail_height = len(detail.get("components", [])) * height
+    declared_fields = ""
+    subreport_parameters = ""
 
     for loop_index, component in enumerate(detail.get("components", [])):
         y_position = loop_index * height
@@ -294,13 +301,22 @@ def build_detail(detail, workbook, page):
             param = detail.get("param", {})
             param["height"] = height
             built_details += build_fields(workbook, page, component, y_position, param)
+            declared_fields = declare_fields(workbook, page, component)
         if component.get("type") == "subreport":
-            built_details += build_subreport(component.get("structure", {}), workbook, y_position, height)
+            subreport_detail, subreport_parameter = build_subreport(
+                component.get("structure", {}), workbook, y_position, height
+            )
+            subreport_parameters += subreport_parameter
+            built_details += subreport_detail
 
         if component.get("type") == "table":
             pass
 
-    return xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_details, "height": detail_height}
+    return (
+        xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_details, "height": detail_height},
+        declared_fields,
+        subreport_parameters,
+    )
 
 
 def build_report(report_structure, workbook):
@@ -319,9 +335,20 @@ def build_report(report_structure, workbook):
 
     if "detail" in report_structure and not utils.is_empty(report_structure.get("detail")):
         detail = report_structure.get("detail")
-        report += build_detail(detail, workbook, report_structure.get("page"))
+        detail_report, detail_fields, subreport_parameters = build_detail(
+            detail, workbook, report_structure.get("page")
+        )
+        report += detail_report
 
-    output = xmlutil.template_to_string("report.jrtmpl") % {"report": report}
+    output = xmlutil.template_to_string("report.jrtmpl") % {
+        "report": report,
+        "parameters": subreport_parameters,
+        "fields": detail_fields,
+        "pageWidth": report_structure.get("width", 1920) + 40,
+        "columnWidth": report_structure.get("Width", 1920),
+        "pageHeight": report_structure.get("height", 200),
+        "reportUuid": uuid.uuid4(),
+    }
     utils.print_to_file(output_path + report_structure.get("name", "report") + ".jrxml", output)
 
 

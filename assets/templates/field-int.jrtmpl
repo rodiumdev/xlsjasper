@@ -1,2 +1,2 @@
 	
-    <parameter name="%(name)s" class="java.lang.Integer"/>
+    <field name="%(name)s" class="java.lang.Integer"/>

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportta" pageWidth="1960" pageHeight="0" orientation="Landscape" columnWidth="1920" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="173e0e44-7165-4c19-937f-82e0e2acfbb7">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportta" pageWidth="%(pageWidth)s" pageHeight="%(pageHeight)s" orientation="Landscape" columnWidth="%(columnWidth)s" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="%(reportUuid)s">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record" />
+    <import value="net.sf.jasperreports.engine.*" />
+    <import value="net.sf.jasperreports.engine.data.*" />
+    <import value="java.util.*" /> 
+    %(parameters)s 
     <queryString>
 		<![CDATA[]]>
-	</queryString>
+	</queryString> 
+    %(fields)s 
     <background>
         <band splitType="Stretch" />
     </background> 
-    
-    %(parameters)s 
-    
-    %(fields)s 
-
     %(report)s 
 </jasperReport>

@@ -1,0 +1,3 @@
+	
+	<parameter name="%(name)s" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="%(nameSource)s" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
