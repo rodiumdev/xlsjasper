@@ -1,5 +1,5 @@
 import uuid
-from toolbox import xmlutil
+from toolbox import temputil
 from toolbox import xlsutil
 from toolbox import utils
 
@@ -45,7 +45,11 @@ def get_grouping_value_and_width(xls_column_range, workbook, page, row):
         if value == "":
             grouping_value_and_width[active_group]["width"] += int(len(bootom_row_value) * PIXEL_FACTOR)
         else:
-            value_and_width = {"value": value, "width": int(len(bootom_row_value) * PIXEL_FACTOR)}
+            value_and_width = {}
+            if bootom_row_value == "":
+                value_and_width = {"value": value, "width": int(len(value) * PIXEL_FACTOR)}
+            else:
+                value_and_width = {"value": value, "width": int(len(bootom_row_value) * PIXEL_FACTOR)}
             grouping_value_and_width.append(value_and_width)
             active_group = len(grouping_value_and_width) - 1
 
@@ -74,23 +78,7 @@ def get_template_parameters(x_position, y_position, width, parameters=False):
 def build_values(value_type, value, parameters=False):
     parameters["value"] = value
     template = "value-" + value_type + ".jrtmpl"
-    return xmlutil.template_to_string(template) % parameters
-
-
-# def build_column():
-#     pass
-
-
-# def build_table():
-#     pass
-
-
-# def build_subreport():
-#     pass
-
-
-# def build_parameters():
-#     pass
+    return temputil.template_to_string(template) % parameters
 
 
 def build_column_header_grouping(column_header, workbook, page, y_position):
@@ -136,7 +124,7 @@ def build_column_header(column_headers, workbook, page):
         else:
             built_column_headers += build_column_header_basic(column_header, workbook, page, y_position)
 
-    return xmlutil.template_to_string("report-columnHeader.jrtmpl") % {
+    return temputil.template_to_string("report-columnHeader.jrtmpl") % {
         "columnHeader": built_column_headers,
         "height": height,
     }
@@ -144,19 +132,22 @@ def build_column_header(column_headers, workbook, page):
 
 def expand_data_type(data_types, field_names):
     expanded_data_type = ""
+    model_schema = []
 
     for field_and_type in data_types:
         field, data_type = field_and_type.split("->")
         if "'" in field:
             value = field.replace("'", "")
-            expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+            expanded_data_type += temputil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+            model_schema.append([data_type, value])
 
         if ":" in field and ("|" not in field):
             col_list = expand_column(field)
             for col in col_list:
                 value = "%(" + col + ")s"
                 value = value % field_names
-                expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                expanded_data_type += temputil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                model_schema.append([data_type, value])
 
         if ":" in field and "|" in field:
             cols, modifier = field.split("|")
@@ -166,14 +157,41 @@ def expand_data_type(data_types, field_names):
                 modifier_index = loop_index % (len(modifier_list))
                 value = "%(" + col + ")s" + modifier_list[modifier_index].capitalize()
                 value = value % field_names
-                expanded_data_type += xmlutil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                expanded_data_type += temputil.template_to_string("field-" + data_type + ".jrtmpl") % {"name": value}
+                model_schema.append([data_type, value])
 
-    return expanded_data_type
+    return expanded_data_type, model_schema
 
 
 def declare_fields(workbook, page, component):
     field_names = get_field_names(workbook, page, component.get("name_row"), component.get("col"))
-    return expand_data_type(component.get("dataType", []), field_names)
+    fields, model_schema = expand_data_type(component.get("dataType", []), field_names)
+    build_java_model(component.get("package"), component.get("field_name", "report"), model_schema)
+    return fields
+
+
+def build_java_model(package, model_name, model_schema):
+    model = (
+        "import lombok.Getter;\nimport lombok.Setter;\n\n@Getter\n@Setter\npublic class "
+        + utils.to_java_class(model_name)
+        + "Fields {\n"
+    )
+    date_import = ""
+
+    for attribute in model_schema:
+        if attribute[0] == "int":
+            model += "private Integer " + attribute[1] + ";\n"
+        if attribute[0] == "long":
+            model += "private Long " + attribute[1] + ";\n"
+        if attribute[0] == "date":
+            date_import = "import java.util.Date;\n"
+            model += "private Date " + attribute[1] + ";\n"
+        if attribute[0] == "string ":
+            model += "private String " + attribute[1] + ";\n"
+    model = "package " + package + ".models;\n\n" + date_import + model
+    model += "}"
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/java/models/"
+    utils.print_to_file(output_path + utils.to_java_class(model_name) + "Fields.java", model)
 
 
 def get_field_names(workbook, page, row, xls_columns):
@@ -193,6 +211,9 @@ def get_field_width(workbook, page, row, xls_columns):
     filed_widths = []
     for xls_column in col_range:
         value = xlsutil.read_cell(workbook, page, row, xls_column)
+        # if value == "":
+        #     filed_widths.append(180)
+        # else:
         filed_widths.append(int(len(value) * PIXEL_FACTOR))
     return filed_widths
 
@@ -230,6 +251,11 @@ def expand_fields(fields, field_names):
                 if ops in field:
                     operand = ops
 
+            if operand == "":
+                value = "%(" + field + ")s"
+                value = value % field_names
+                expanded_fields.append(value_field % {"value": value})
+                continue
             if "|" in field:
                 formula, modifiers = field.split("|")
                 col_list = formula.split(operand)
@@ -272,9 +298,23 @@ def build_fields(workbook, page, component, y_position, parameters=False):
     return built_fields
 
 
+def declare_java_sbureport(structure):
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/temp/java/"
+
+    template_subreport = temputil.java_template_to_string("subreport.javtmpl") % {
+        "package": structure.get("package"),
+        "class_name": utils.to_java_class(structure.get("name", "subreport")),
+        "field_class_name": utils.to_java_class(structure.get("field_name", "subreport")),
+        "obj_name": utils.to_java_object(structure.get("name", "subreport")),
+    }
+
+    utils.append_to_file(output_path + "tmp.java", template_subreport)
+
+
 def build_subreport(report_structure, workbook, y_position, height):
     build_report(report_structure, workbook)
-    target_parameter = utils.to_java_variable_cap(report_structure["name"])
+    declare_java_sbureport(report_structure)
+    target_parameter = utils.to_java_object(report_structure["name"])
     default_parameters = {
         "height": height,
         "target_parameter": target_parameter,
@@ -282,8 +322,8 @@ def build_subreport(report_structure, workbook, y_position, height):
     }
     template_parameters = get_template_parameters(0, y_position, 1920, parameters=default_parameters)
     return (
-        xmlutil.template_to_string("subreport.jrtmpl") % template_parameters,
-        xmlutil.template_to_string("parameter-subreport.jrtmpl")
+        temputil.template_to_string("subreport.jrtmpl") % template_parameters,
+        temputil.template_to_string("parameter-subreport.jrtmpl")
         % {"name": default_parameters.get("target_parameter"), "nameSource": default_parameters.get("data_source")},
     )
 
@@ -313,17 +353,45 @@ def build_detail(detail, workbook, page):
             pass
 
     return (
-        xmlutil.template_to_string("report-detail.jrtmpl") % {"detail": built_details, "height": detail_height},
+        temputil.template_to_string("report-detail.jrtmpl") % {"detail": built_details, "height": detail_height},
         declared_fields,
         subreport_parameters,
     )
 
 
-def build_report(report_structure, workbook):
-    # file paths
-    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/"
+def build_template_request_parameters_model(structure):
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/java/models/"
 
+    template_request_parameters_model = temputil.java_template_to_string("model-request-param.javtmpl") % {
+        "package": structure.get("package"),
+        "class_name": utils.to_java_class(structure.get("name", "")),
+    }
+
+    utils.print_to_file(
+        output_path + utils.to_java_class(structure.get("name", "")) + "RequestParameters.java",
+        template_request_parameters_model,
+    )
+
+
+def build_template_provider(structure):
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/java/"
+
+    template_provider = temputil.java_template_to_string("provider.javtmpl") % {
+        "package": structure.get("package"),
+        "class_name": utils.to_java_class(structure.get("name", "report")),
+        "field_class_name": utils.to_java_class(structure.get("field_name", "report")),
+        "obj_name": utils.to_java_object(structure.get("name", "report")),
+        "subreports": temputil.tmp_template_to_string(),
+    }
+
+    utils.print_to_file(
+        output_path + utils.to_java_class(structure.get("name", "report")) + "Provider.java", template_provider
+    )
+
+
+def build_report(report_structure, workbook):
     # instatiation
+    output_path = "C:/Programming/scripts_queries/scripts/xlsjasper/output/"
     report = ""
 
     if "title" in report_structure and not utils.is_empty(report_structure.get("title")):
@@ -340,7 +408,7 @@ def build_report(report_structure, workbook):
         )
         report += detail_report
 
-    output = xmlutil.template_to_string("report.jrtmpl") % {
+    output = temputil.template_to_string("report.jrtmpl") % {
         "report": report,
         "parameters": subreport_parameters,
         "fields": detail_fields,
@@ -355,4 +423,7 @@ def build_report(report_structure, workbook):
 def build(file_name, structure):
     input_path = INPUT_PATH
     workbook = xlsutil.load_workbook(input_path + file_name)
+
     build_report(structure, workbook)
+    build_template_request_parameters_model(structure)
+    build_template_provider(structure)
