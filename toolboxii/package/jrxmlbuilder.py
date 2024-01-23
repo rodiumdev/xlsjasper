@@ -18,8 +18,10 @@ def main_report(component, parameters):
     headers = component.get("headers", "")
     fields = component.get("fields", "")
 
+    table_structure = get_tbl_structure(parameters["workbook"], parameters["page"], headers, parameters["columns"])
+    print(table_structure)
     if headers:
-        build_header(headers, parameters["workbook"], parameters["page"], parameters["columns"])
+        build_header(table_structure, parameters["height"], parameters["width"])
 
     if fields:
         build_fields(fields)
@@ -30,26 +32,81 @@ def sub_report(component):
 
 
 # Headers
-def build_header(headers, workbook, page, columns):
-    rows = expang_row_range(headers)
-    read_headers_from_excel(workbook, page, rows, columns)
+def build_header(table_structure, row_height, column_width):
+    for row in table_structure:
+        value = ""
+        width = 0
+        position = 0
+        position_tracker = 0
+        first = True
+
+        for column_key in row:
+            if row[column_key] != "":
+                if not first:
+                    pass  # produce header column
+                value = row[column_key] if row[column_key] != "-empty" else ""
+                position += width
+                width = column_width
+            width += column_width
+        pass  # produce header column
 
 
-def expang_row_range(header_range):
-    points = header_range.split(":")
-    if len(points) == 2:
-        return list(range(int(points[0]), int(points[1]) + 1))
-    return []
+def produce_row():
+    pass
+
+    # for row in table_structure:
+    #     value = ""
+    #     position = 0
+    #     width = column_width
+    #     column_keys = row.keys()
+    #     for index, column_key in column_keys:
+    #         if row[column_key[index + 1]] == "":
+    #             width += column_width
+    #         if row[column_key] != "":
+    #             if row[column_key] == "-empty-":
+    #                 value = ""
+    #             else:
+    #                 value = row[column_key]
 
 
-def read_headers_from_excel(workbook, page, rows, columns):
+def get_tbl_structure(workbook, page, headers, columns):
+    rows = expand_header_row_range(headers)
     header_column_list = []
     for row in rows:
         column_values = dict()
         for column in columns:
             column_values[column] = xls.read_cell(workbook, page, row, column)
         header_column_list.append(column_values)
-    print(header_column_list)
+    return clean_up_header_list(header_column_list)
+
+
+def expand_header_row_range(header_range):
+    points = header_range.split(":")
+    if len(points) == 2:
+        return list(range(int(points[0]), int(points[1]) + 1))
+    return []
+
+
+def clean_up_header_list(header_rows):
+    if header_rows:
+        last_row_index = len(header_rows) - 1
+    column_to_remove = []
+    for column in reversed(header_rows[last_row_index]):
+        if header_rows[last_row_index][column] == "":
+            column_to_remove.append(column)
+        else:
+            break
+
+    for column in column_to_remove:
+        for header_row in header_rows:
+            header_row.pop(column)
+    for header_row in header_rows:
+        for col in header_row:
+            if header_row[col] == "":
+                header_row[col] = "-empty-"
+            else:
+                break
+    return header_rows
 
 
 # Fields

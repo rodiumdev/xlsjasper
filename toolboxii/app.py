@@ -48,7 +48,8 @@ report_definition = {
     "column_width": 200,
     "column_range": "A:AK",
     "components": [
-        {"type": "main", "headers": "25:26", "fields": rg_fields},
+        {"type": "main", "headers": "110:113", "fields": cmplx_fields},
+        # {"type": "main", "headers": "25:26", "fields": rg_fields},
         {
             "type": "subreport",
             "name": "subreport",
