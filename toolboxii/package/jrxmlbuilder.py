@@ -18,8 +18,11 @@ def main_report(component, parameters):
     headers = component.get("headers", "")
     fields = component.get("fields", "")
 
-    table_structure = get_tbl_structure(parameters["workbook"], parameters["page"], headers, parameters["columns"])
-    print(table_structure)
+    table_structure = get_tbl_structure(
+        parameters["workbook"], parameters["page"], headers, parameters["columns"], parameters["width"]
+    )
+    print(table_structure)  # log
+
     if headers:
         build_header(table_structure, parameters["height"], parameters["width"])
 
@@ -51,25 +54,7 @@ def build_header(table_structure, row_height, column_width):
         pass  # produce header column
 
 
-def produce_row():
-    pass
-
-    # for row in table_structure:
-    #     value = ""
-    #     position = 0
-    #     width = column_width
-    #     column_keys = row.keys()
-    #     for index, column_key in column_keys:
-    #         if row[column_key[index + 1]] == "":
-    #             width += column_width
-    #         if row[column_key] != "":
-    #             if row[column_key] == "-empty-":
-    #                 value = ""
-    #             else:
-    #                 value = row[column_key]
-
-
-def get_tbl_structure(workbook, page, headers, columns):
+def get_tbl_structure(workbook, page, headers, columns, default_width):
     rows = expand_header_row_range(headers)
     header_column_list = []
     for row in rows:
@@ -77,7 +62,8 @@ def get_tbl_structure(workbook, page, headers, columns):
         for column in columns:
             column_values[column] = xls.read_cell(workbook, page, row, column)
         header_column_list.append(column_values)
-    return clean_up_header_list(header_column_list)
+    cleaned_row_list = clean_up_header_list(header_column_list)
+    return make_proper_structure(cleaned_row_list, default_width)
 
 
 def expand_header_row_range(header_range):
@@ -107,6 +93,31 @@ def clean_up_header_list(header_rows):
             else:
                 break
     return header_rows
+
+
+def make_proper_structure(cleaned_row_list, column_width):
+    structure_row_list = []
+
+    for row in cleaned_row_list:
+        structure_row = {}
+        key_list = list(row.keys())
+        cell_key = ""
+        cell_width = 0
+        cell_position = 0
+        cell_value = ""
+        for index, col_key in enumerate(key_list):
+            if row[col_key] != "":  # ignore null value cells
+                cell_value = row[col_key]
+                cell_key = col_key
+            cell_width += column_width
+
+            # if next column is not empty store the value, width and position information
+            if (index + 2 > len(key_list)) or row[key_list[index + 1]] != "":
+                structure_row[cell_key] = {"value": cell_value, "width": cell_width, "position": cell_position}
+                cell_width = 0
+                cell_position += column_width
+        structure_row_list.append(structure_row)
+    return structure_row_list
 
 
 # Fields
