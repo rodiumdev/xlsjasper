@@ -1,9 +1,9 @@
 
     <textField>
-            <reportElement x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s" />
-                <box><pen lineWidth="%(border)s"/></box>
-            <textElement textAlignment="%(h_align)s" verticalAlignment="%(v_align)s">
-                <font size="%(font)s" />
-            </textElement>
+        <reportElement x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s" />
+        <box><pen lineWidth="%(border)s"/></box>
+        <textElement textAlignment="%(h_align)s" verticalAlignment="%(v_align)s">
+            <font size="%(font)s" />
+        </textElement>
         <textFieldExpression><![CDATA[%(value)s]]></textFieldExpression>
     </textField>

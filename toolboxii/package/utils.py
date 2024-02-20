@@ -12,3 +12,8 @@ def header_text(text):
 
 def normalize_whitespace(text):
     return " ".join(text.strip().split())
+
+
+def print_to_file(output_path, data):
+    with open(output_path, "w") as file_writer:
+        print(data, file=file_writer)

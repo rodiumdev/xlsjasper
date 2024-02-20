@@ -1,5 +1,7 @@
 from package import utils
 from package import xls
+from package import template
+import uuid
 
 
 # ALGORITHM
@@ -17,17 +19,30 @@ from package import xls
 def main_report(component, parameters):
     headers = component.get("headers", "")
     fields = component.get("fields", "")
+    report = ""
 
     table_structure = get_tbl_structure(
         parameters["workbook"], parameters["page"], headers, parameters["columns"], parameters["width"]
     )
-    print(table_structure)  # log
 
     if headers:
-        build_header(table_structure, parameters["height"], parameters["width"])
+        report += build_header(table_structure, parameters["height"])
 
     if fields:
-        build_fields(fields)
+        report += build_fields(table_structure, fields, parameters["height"])
+
+    # to be reviewed
+    output = template.template_to_string("report.jrtmpl") % {
+        "report": report,
+        "parameters": "",
+        "fields": "",
+        "pageWidth": 0,
+        "columnWidth": 0,
+        "pageHeight": 0,
+        "reportUuid": uuid.uuid4(),
+    }
+
+    utils.print_to_file(parameters["output_path"] + "jasper" + "/" + parameters["name"] + ".jrxml", output)
 
 
 def sub_report(component):
@@ -35,23 +50,92 @@ def sub_report(component):
 
 
 # Headers
-def build_header(table_structure, row_height, column_width):
-    for row in table_structure:
-        value = ""
-        width = 0
-        position = 0
-        position_tracker = 0
-        first = True
+def build_header(table_structure, row_height):
+    headers_xml = ""
+    for y_index, row in enumerate(table_structure):
+        for column in row:
+            column_data = row[column]
+            parameters = build_parameters(column_data, row_height, y_index)
+            headers_xml += template.template_to_string("value-static.jrtmpl") % parameters
+    return template.template_to_string("report-columnHeader.jrtmpl") % {
+        "columnHeader": headers_xml,
+        "height": row_height * len(table_structure),
+    }
 
-        for column_key in row:
-            if row[column_key] != "":
-                if not first:
-                    pass  # produce header column
-                value = row[column_key] if row[column_key] != "-empty" else ""
-                position += width
-                width = column_width
-            width += column_width
-        pass  # produce header column
+
+# Fields
+def build_fields(table_structure, fields, row_height):
+    last_row_index = len(table_structure) - 1
+    last_row = table_structure[last_row_index]
+    fields_xml = ""
+
+    for column in last_row:
+        if column in fields:
+            field_representation = fields[column]
+            if "=" not in field_representation:
+                pass
+            else:
+                pass
+
+            fields_xml += ""
+        else:
+            fields_xml += ""
+        # static, value, calc
+
+
+def make_static_field():
+    pass
+
+
+# others
+def build_parameters(column_data, height, y_index):
+    parameters = {}
+    parameters["x"] = column_data["position"]
+    parameters["y"] = y_index * height
+    parameters["width"] = column_data["width"]
+    parameters["height"] = height
+    parameters["value"] = column_data["value"]
+
+    parameters["v_align"] = "Middle"
+    parameters["h_align"] = "Center"
+    parameters["border"] = 1
+    parameters["font"] = 11
+    parameters["uuidv4"] = uuid.uuid4()
+
+    return parameters
+
+
+def expand_column_range(column_range):
+    points = column_range.split(":")
+
+    if len(points) == 2:
+        start = points[0]
+        end = points[1]
+
+        if len(end) < 2:
+            return utils.charecter_range(start, end)
+        else:
+            column_range = []
+            if len(start) < 2:
+                first_charecter_start = "A"
+                second_charecter_start = "A"
+                column_range = utils.charecter_range(start, "Z")
+            else:
+                first_charecter_start = start[0]
+                second_charecter_start = start[1]
+            end_range = utils.charecter_range(first_charecter_start, end[0])
+
+            for first_charecter in end_range:
+                for second_charecter in utils.charecter_range(second_charecter_start, "Z"):
+                    res = first_charecter + second_charecter
+                    if res != end:
+                        column_range.append(res)
+                    else:
+                        break
+                second_charecter_start = "A"
+            column_range.append(end)
+            return column_range
+    return []
 
 
 def get_tbl_structure(workbook, page, headers, columns, default_width):
@@ -118,42 +202,3 @@ def make_proper_structure(cleaned_row_list, column_width):
                 cell_position += column_width
         structure_row_list.append(structure_row)
     return structure_row_list
-
-
-# Fields
-def build_fields(fields):
-    pass
-
-
-# others
-def expand_column_range(column_range):
-    points = column_range.split(":")
-
-    if len(points) == 2:
-        start = points[0]
-        end = points[1]
-
-        if len(end) < 2:
-            return utils.charecter_range(start, end)
-        else:
-            column_range = []
-            if len(start) < 2:
-                first_charecter_start = "A"
-                second_charecter_start = "A"
-                column_range = utils.charecter_range(start, "Z")
-            else:
-                first_charecter_start = start[0]
-                second_charecter_start = start[1]
-            end_range = utils.charecter_range(first_charecter_start, end[0])
-
-            for first_charecter in end_range:
-                for second_charecter in utils.charecter_range(second_charecter_start, "Z"):
-                    res = first_charecter + second_charecter
-                    if res != end:
-                        column_range.append(res)
-                    else:
-                        break
-                second_charecter_start = "A"
-            column_range.append(end)
-            return column_range
-    return []

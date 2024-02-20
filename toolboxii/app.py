@@ -101,6 +101,7 @@ report_definition = {
 DEFAULT_HEIGHT = 20
 DEFAULT_WIDTH = 100
 XLS_FILE = "sfm.xlsx"
+OUTPUT_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/output2/"
 
 
 def main(report):
@@ -112,6 +113,7 @@ def main(report):
             "columns": jrxmlbuilder.expand_column_range(report.get("column_range", "")),
             "height": report.get("column_height", DEFAULT_HEIGHT),
             "width": report.get("column_width", DEFAULT_WIDTH),
+            "output_path": OUTPUT_PATH,
         }
 
         for component in report.get("components", []):
