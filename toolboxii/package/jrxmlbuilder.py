@@ -1,7 +1,7 @@
+import uuid
 from package import utils
 from package import xls
 from package import template
-import uuid
 
 
 # ALGORITHM
@@ -16,39 +16,72 @@ import uuid
 
 
 # Reports
-def main_report(component, parameters):
+def main_report(name, component, parameters):
     headers = component.get("headers", "")
-    fields = component.get("fields", "")
-    report = ""
+    fields = component.get("fields", {})
+    subreports = component.get("subreports", [])
+
+    report_xml = ""
+    fields_xml = ""
+    subreports_xml = ""
+    parameters_declarations_xml = ""
+    field_declarations_xml = ""
 
     table_structure = get_tbl_structure(
-        parameters["workbook"], parameters["page"], headers, parameters["columns"], parameters["width"]
+        parameters["workbook"],
+        parameters["page"],
+        headers,
+        component.get("parent"),
+        parameters["columns"],
+        parameters["width"],
     )
+
+    report_width = parameters["width"] * len(parameters["columns"])
+    report_header_height = parameters["height"] * len(table_structure)
+    report_detail_height = parameters["height"] * (len(subreports) + 1)
 
     # print(table_structure)
 
     if headers:
-        report += build_header(table_structure, parameters["height"])
+        report_xml += build_header(table_structure, parameters["height"])
 
     if fields:
-        report += build_details(table_structure, fields, parameters["height"])
+        fields_xml += build_fields(table_structure, fields, parameters["height"])
+        field_declarations_xml = declare_jasper_fields(table_structure, fields)
+
+    for sub_report_index, subreport in enumerate(subreports):
+        sub_report_name = subreport.get("name", "subreport")
+        main_report(sub_report_name, subreport.get("components", {}), parameters)
+        subreports_xml += sub_report(sub_report_name, report_width, parameters["height"], sub_report_index)
+        parameters_declarations_xml += declare_jasper_subreport_parameters(sub_report_name)
+
+    report_xml += build_details(fields_xml, subreports_xml, report_detail_height)
 
     # to be reviewed
     output = template.template_to_string("report.jrtmpl") % {
-        "report": report,
-        "parameters": "",
-        "fields": "",
-        "pageWidth": 0,
-        "columnWidth": 0,
-        "pageHeight": 0,
+        "report": report_xml,
+        "parameters": parameters_declarations_xml,
+        "fields": field_declarations_xml,
+        "pageWidth": report_width + 80,
+        "columnWidth": report_width + 40,
+        "pageHeight": report_header_height + report_detail_height + 40,
         "reportUuid": uuid.uuid4(),
     }
 
-    utils.print_to_file(parameters["output_path"] + "jasper" + "/" + parameters["name"] + ".jrxml", output)
+    utils.print_to_file(parameters["output_path"] + "jasper" + "/" + name + ".jrxml", output)
 
 
-def sub_report(component):
-    pass
+# Subreports
+def sub_report(subreport_name, width, height, y_index):
+    parameters = build_subreport_parameters(subreport_name, width, height, y_index)
+    return template.template_to_string("subreport.jrtmpl") % parameters
+
+
+def declare_jasper_subreport_parameters(subreport_name):
+    return template.template_to_string("parameter-subreport.jrtmpl") % {
+        "name": utils.to_variable(utils.clean_brackets(subreport_name) + " Subreport"),
+        "nameSource": utils.to_variable(utils.clean_brackets(subreport_name) + " DataSource"),
+    }
 
 
 # Headers
@@ -65,8 +98,17 @@ def build_header(table_structure, row_height):
     }
 
 
+# Detaisl
+def build_details(fields_xml, subreport_xml, height):
+    return template.template_to_string("report-detail-plus-subreport.jrtmpl") % {
+        "detail": fields_xml,
+        "subreport": subreport_xml,
+        "height": height,
+    }
+
+
 # Fields
-def build_details(table_structure, fields, row_height):
+def build_fields(table_structure, fields, row_height):
     y_index = len(table_structure)
     last_row_index = y_index - 1
     last_row = table_structure[last_row_index]
@@ -76,14 +118,33 @@ def build_details(table_structure, fields, row_height):
         if column_key in fields:
             field_representation = fields[column_key]
             if "=" not in field_representation:  # fixed variable name
-                fields_xml += make_fixed_field(last_row[column_key], field_representation, row_height, y_index)
+                fields_xml += make_fixed_field(last_row[column_key], field_representation, row_height, 0)
             else:  # calculation based on other columns
-                fields_xml += make_calcuation_field(
-                    last_row[column_key], field_representation[1:], last_row, row_height, y_index
-                )
+                fields_xml += make_calc_field(last_row[column_key], field_representation[1:], last_row, row_height, 0)
         else:
-            fields_xml += make_vairable_field(last_row[column_key], row_height, y_index)
-    return template.template_to_string("report-detail.jrtmpl") % {"detail": fields_xml, "height": row_height}
+            fields_xml += make_vairable_field(last_row[column_key], row_height, 0)
+    return fields_xml
+
+
+def declare_jasper_fields(table_structure, fields):
+    last_row = table_structure[len(table_structure) - 1]
+    field_declarations_xml = ""
+
+    for column_key in last_row:
+        if column_key in fields:
+            field_representation = fields[column_key]
+            if "=" not in field_representation:  # fixed variable name
+                field_declarations_xml += template.template_to_string("field-string.jrtmpl") % {
+                    "name": utils.to_variable(field_representation)
+                }
+        else:
+            column_data = last_row[column_key]
+            field_declarations_xml += template.template_to_string("field-int.jrtmpl") % {
+                "name": utils.to_variable(
+                    utils.clean_brackets(column_data["parent"]) + " " + utils.clean_brackets(column_data["value"])
+                )
+            }
+    return field_declarations_xml
 
 
 def make_fixed_field(column_data, field_representation, row_height, y_index):
@@ -95,20 +156,24 @@ def make_fixed_field(column_data, field_representation, row_height, y_index):
 
 def make_vairable_field(column_data, row_height, y_index):
     local_col_data = column_data.copy()
-    value = column_data["parent"] + " " + column_data["value"]
+    value = utils.clean_brackets(column_data["parent"]) + " " + utils.clean_brackets(column_data["value"])
     local_col_data["value"] = "$F{" + utils.to_variable(value) + "}"
     parameters = build_field_or_header_parameters(local_col_data, row_height, y_index)
     return template.template_to_string("value-field-complex.jrtmpl") % parameters
 
 
-def make_calcuation_field(column_data, field_representation, last_row, row_height, y_index):
+def make_calc_field(column_data, field_representation, last_row, row_height, y_index):
     local_col_data = column_data.copy()
     operand = get_operation(field_representation)
     column_keys = field_representation.split(operand) if operand != "" else [field_representation]
     evaluated_columns = []
 
     for column_key in column_keys:
-        value = utils.to_variable(last_row[column_key]["parent"] + " " + last_row[column_key]["value"])
+        value = utils.to_variable(
+            utils.clean_brackets(last_row[column_key]["parent"])
+            + " "
+            + utils.clean_brackets(last_row[column_key]["value"])
+        )
         evaluated_columns.append("$F{" + value + "}")
 
     local_col_data["value"] = operand.join(str(x) for x in evaluated_columns)
@@ -141,6 +206,19 @@ def build_field_or_header_parameters(column_data, height, y_index):
     parameters["h_align"] = "Center"
     parameters["border"] = 1
     parameters["font"] = 11
+    parameters["uuidv4"] = uuid.uuid4()
+
+    return parameters
+
+
+def build_subreport_parameters(name, width, height, y_index):
+    parameters = {}
+    parameters["x"] = 0
+    parameters["y"] = (y_index + 1) * height
+    parameters["width"] = width
+    parameters["height"] = height
+    parameters["data_source"] = utils.to_variable(name) + "DataSource"
+    parameters["target_parameter"] = utils.to_variable(name) + "Subreport"
     parameters["uuidv4"] = uuid.uuid4()
 
     return parameters
@@ -179,7 +257,7 @@ def expand_column_range(column_range):
     return []
 
 
-def get_tbl_structure(workbook, page, headers, columns, default_width):
+def get_tbl_structure(workbook, page, headers, parent, columns, default_width):
     rows = expand_header_row_range(headers)
     header_column_list = []
     for row in rows:
@@ -188,11 +266,13 @@ def get_tbl_structure(workbook, page, headers, columns, default_width):
             column_values[column] = xls.read_cell(workbook, page, row, column)
         header_column_list.append(column_values)
     cleaned_row_list = clean_up_header_list(header_column_list)
-    return make_proper_structure(cleaned_row_list, default_width)
+    return make_proper_structure(cleaned_row_list, parent, default_width)
 
 
 def expand_header_row_range(header_range):
     points = header_range.split(":")
+    if len(points) == 1:
+        return [int(points[0])]
     if len(points) == 2:
         return list(range(int(points[0]), int(points[1]) + 1))
     return []
@@ -220,7 +300,7 @@ def clean_up_header_list(header_rows):
     return header_rows
 
 
-def make_proper_structure(cleaned_row_list, column_width):
+def make_proper_structure(cleaned_row_list, parent, column_width):
     structure_row_list = []
 
     for row_index, row in enumerate(cleaned_row_list):
@@ -233,10 +313,11 @@ def make_proper_structure(cleaned_row_list, column_width):
         cell_parent_value = ""
         for index, col_key in enumerate(key_list):
             if row[col_key] != "":  # ignore null value cells
-                cell_value = row[col_key]
+                cell_value = row[col_key] if row[col_key] != "-empty-" else ""
                 cell_key = col_key
             if (
-                row_index != 0
+                row_index > 0
+                and parent
                 and cleaned_row_list[row_index - 1][col_key] != ""
                 and cleaned_row_list[row_index - 1][col_key] != "-empty-"
             ):  # ignore null value cells
@@ -251,7 +332,7 @@ def make_proper_structure(cleaned_row_list, column_width):
                     "position": cell_position,
                     "parent": cell_parent_value,
                 }
+                cell_position += cell_width
                 cell_width = 0
-                cell_position += column_width
         structure_row_list.append(structure_row)
     return structure_row_list

@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportta" pageWidth="7480" pageHeight="120" orientation="Landscape" columnWidth="7440" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="38bcce1a-b1c5-4229-ae21-410f60dd7cab">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record" />
+    <import value="net.sf.jasperreports.engine.*" />
+    <import value="net.sf.jasperreports.engine.data.*" />
+    <import value="java.util.*" /> 
+     
+    <queryString>
+		<![CDATA[]]>
+	</queryString> 
+    	
+    <field name="label" class="java.lang.String"/>	
+    <field name="anneeN1Volume" class="java.lang.Integer"/>	
+    <field name="anneeN1Valeur" class="java.lang.Integer"/>	
+    <field name="janvierVolume" class="java.lang.Integer"/>	
+    <field name="janvierValeur" class="java.lang.Integer"/>	
+    <field name="fevierVolume" class="java.lang.Integer"/>	
+    <field name="fevierValeur" class="java.lang.Integer"/>	
+    <field name="marsVolume" class="java.lang.Integer"/>	
+    <field name="marsValeur" class="java.lang.Integer"/>	
+    <field name="avrilVolume" class="java.lang.Integer"/>	
+    <field name="avrilValeur" class="java.lang.Integer"/>	
+    <field name="maiVolume" class="java.lang.Integer"/>	
+    <field name="maiValeur" class="java.lang.Integer"/>	
+    <field name="juinVolume" class="java.lang.Integer"/>	
+    <field name="juinValeur" class="java.lang.Integer"/>	
+    <field name="juilletVolume" class="java.lang.Integer"/>	
+    <field name="juilletValeur" class="java.lang.Integer"/>	
+    <field name="aoutVolume" class="java.lang.Integer"/>	
+    <field name="aoutValeur" class="java.lang.Integer"/>	
+    <field name="septembreVolume" class="java.lang.Integer"/>	
+    <field name="septembreValeur" class="java.lang.Integer"/>	
+    <field name="octobreVolume" class="java.lang.Integer"/>	
+    <field name="octobreValeur" class="java.lang.Integer"/>	
+    <field name="novembreVolume" class="java.lang.Integer"/>	
+    <field name="novembreValeur" class="java.lang.Integer"/>	
+    <field name="decembreVolume" class="java.lang.Integer"/>	
+    <field name="decembreValeur" class="java.lang.Integer"/> 
+    <background>
+        <band splitType="Stretch" />
+    </background> 
+        
+    <columnHeader>
+        <band height="60" splitType="Stretch">
+                
+    <staticText>
+        <reportElement x="0" y="0" width="7400" height="20" uuid="40b4ace0-bbe7-43a7-8f51-073dfe4e683f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[TABLE 4]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="0" y="20" width="200" height="20" uuid="cfa96916-21cc-4600-88ed-eba69a784ff7" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Services offerts via la telephonie mobile]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="200" y="20" width="400" height="20" uuid="34bebf32-5642-469e-ab27-904affcc2ca6" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Annee N-1 (2017)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="600" y="20" width="400" height="20" uuid="065945a1-9293-4650-9f0b-9466d9e2ec93" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Janvier (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1000" y="20" width="400" height="20" uuid="c87c93a0-65f3-4ec3-b2e4-da12fa2869a6" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Fevier (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1400" y="20" width="400" height="20" uuid="9b651b24-6dd3-4e21-a8f9-ea6a44a7144e" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[mars (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1800" y="20" width="400" height="20" uuid="51892e52-d503-4320-b521-7ef5ecb85ac4" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Trimestre 1 (Cumul trimestre)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2200" y="20" width="400" height="20" uuid="6ed6534f-ee4f-4bd7-b5c7-36335e23d31f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[avril (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2600" y="20" width="400" height="20" uuid="9a73c7b1-e1d7-4eb2-a5be-de0863cc724b" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[mai (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3000" y="20" width="400" height="20" uuid="9d62ca8c-e2de-4139-acbc-ff29b2a71998" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[juin (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3400" y="20" width="400" height="20" uuid="b3741146-b8a4-4d01-93d6-b5e6176bf632" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Trimestre 2 (mensuel)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3800" y="20" width="400" height="20" uuid="32211a4a-c9ef-418a-9c6d-3cabade9b800" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[juillet (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4200" y="20" width="400" height="20" uuid="3d5c1066-2194-4542-a5a0-62b5cb4a4185" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[aout (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4600" y="20" width="400" height="20" uuid="acd8c700-ff8d-4f40-85ee-277ce1232881" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[septembre (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5000" y="20" width="400" height="20" uuid="5e67fb7a-a5a0-4dc1-a864-2bac67fd6cf4" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Trimestre 3 (Cumul trimestre)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5400" y="20" width="400" height="20" uuid="5acd1a9d-f295-4ab5-bb49-ef142ff39c4b" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Octobre (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5800" y="20" width="400" height="20" uuid="eb0b394f-e272-4be7-814e-083d14dd5f93" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[novembre (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6200" y="20" width="400" height="20" uuid="08795979-611c-4abe-a442-75f79c258420" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Decembre (mensuel]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6600" y="20" width="400" height="20" uuid="6d3fd20d-916c-41c2-8599-7185c054377a" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Trimestre 4  (Cumul trimestre]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="7000" y="20" width="400" height="20" uuid="db909b50-6e46-4314-912e-8e256feba2ea" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[TOTAL Annee N (Total T1+T2+T3+T4)]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="0" y="40" width="200" height="20" uuid="50b18a2b-a3fb-4c0f-ae0e-5b58b1dce223" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Services financiers de premiere generation]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="200" y="40" width="200" height="20" uuid="bcd09ec5-fbca-4c23-af88-09e632e90367" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="400" y="40" width="200" height="20" uuid="a3eb59b1-6b70-495e-a0fb-956d8001558d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="600" y="40" width="200" height="20" uuid="533b5cd0-dd6a-4b4c-9bd3-6613bb7bcb7e" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="800" y="40" width="200" height="20" uuid="305007f7-8113-4b7e-a92b-7cf4e8a7e37d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1000" y="40" width="200" height="20" uuid="9c4f7585-85bf-4255-a4b9-28f5da2188da" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1200" y="40" width="200" height="20" uuid="b313038c-0433-42ef-bb0f-c85237ef81e0" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1400" y="40" width="200" height="20" uuid="c2593486-d513-4cb6-9628-152f761d532f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1600" y="40" width="200" height="20" uuid="32d16dd8-79d3-4578-a4ca-edf4139373ec" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="1800" y="40" width="200" height="20" uuid="5c2326a5-88e3-47a5-9e5a-ff545d23e153" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2000" y="40" width="200" height="20" uuid="2827cfd0-2839-4360-86c0-4d9d05433662" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2200" y="40" width="200" height="20" uuid="b3b56aae-2042-45e4-8f0b-2c8f670f515d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2400" y="40" width="200" height="20" uuid="3d1a97a5-d8c2-4eff-82ec-a03a1ad68c00" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2600" y="40" width="200" height="20" uuid="38d9f422-0cbc-4b63-8f22-2ef94180eb2b" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="2800" y="40" width="200" height="20" uuid="04953620-f1a7-48d0-a3c6-6e86d80eb70f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3000" y="40" width="200" height="20" uuid="f6a53b72-441e-4cb3-97d1-5ca6e419482a" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3200" y="40" width="200" height="20" uuid="05db98da-d41e-46e2-b01a-3182138ac5df" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3400" y="40" width="200" height="20" uuid="fdd3bc7c-71f4-4424-afac-0812f845f049" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3600" y="40" width="200" height="20" uuid="70619216-76a6-4598-89a5-67595fa2e4ca" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="3800" y="40" width="200" height="20" uuid="03d195d0-3c33-4e3a-8fbf-9b51587c2dfc" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4000" y="40" width="200" height="20" uuid="0cff93c0-861e-495f-bb2a-2f54271c2cb2" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4200" y="40" width="200" height="20" uuid="8d7a3379-3eb4-4f49-aaaa-019feeba7fa1" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4400" y="40" width="200" height="20" uuid="384136ea-382c-4d89-8b53-11b01a74c495" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4600" y="40" width="200" height="20" uuid="b459f98c-abc7-4cc8-b0cb-d6aa1cd064b6" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="4800" y="40" width="200" height="20" uuid="eb94c348-dc03-408d-9f4f-624e64d183fc" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5000" y="40" width="200" height="20" uuid="4a43dd8a-b136-4a9e-ba66-1f5ce7fedc38" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5200" y="40" width="200" height="20" uuid="30695c8b-282a-4b8a-becf-9c43f5908cf4" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5400" y="40" width="200" height="20" uuid="5ef48062-730b-4753-a799-5da20536ce34" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5600" y="40" width="200" height="20" uuid="05a25278-e657-48cd-8671-f5de42be379f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="5800" y="40" width="200" height="20" uuid="5b197a3d-8cf8-4e3e-be12-e2f0db2ed212" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6000" y="40" width="200" height="20" uuid="ed7acab8-df79-4041-9828-ff01223ff9ac" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6200" y="40" width="200" height="20" uuid="ec41bc3f-4cc2-4827-a107-a82d5e9c87d8" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6400" y="40" width="200" height="20" uuid="7c13a78a-ffca-4152-9c1b-ccb79ad84c03" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6600" y="40" width="200" height="20" uuid="e1fa3bb5-92b7-4e54-985b-51e324616f59" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="6800" y="40" width="200" height="20" uuid="002aa9dc-f4d4-4859-a6e3-5b89b13050c8" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="7000" y="40" width="200" height="20" uuid="3aa3ed1a-679a-42e5-997e-4f3e3f92b2f0" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Volume]]></text>
+    </staticText>
+    
+    <staticText>
+        <reportElement x="7200" y="40" width="200" height="20" uuid="9f1147ad-fd85-4648-914c-75d083710b9f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <text><![CDATA[Valeur]]></text>
+    </staticText>
+
+        </band>
+    </columnHeader>
+    
+    <detail>
+        <band height="20" splitType="Stretch">
+            
+    <textField>
+        <reportElement x="0" y="0" width="200" height="20" uuid="77a203bd-2af4-4622-8183-0994ae4c4869" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="200" y="0" width="200" height="20" uuid="7005f7ce-047e-430c-9421-27cd30f3a0bb" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{anneeN1Volume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="400" y="0" width="200" height="20" uuid="66b58c25-000b-4dfb-8d7c-f9c1fb7ebb51" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{anneeN1Valeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="600" y="0" width="200" height="20" uuid="86ad0e49-9550-4ef2-8a8a-08f39b632678" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="800" y="0" width="200" height="20" uuid="5299a9b7-8e1d-4bf7-927d-1b7707a59535" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="1000" y="0" width="200" height="20" uuid="023fb041-5c92-49e5-a178-38b42e740729" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{fevierVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="1200" y="0" width="200" height="20" uuid="1fceab05-0e42-461d-8fd5-288594f00fa7" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{fevierValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="1400" y="0" width="200" height="20" uuid="2f78a062-81fc-4517-80aa-1cd407be667d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{marsVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="1600" y="0" width="200" height="20" uuid="84e53106-f30b-487d-a635-f794ac2117a1" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{marsValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="1800" y="0" width="200" height="20" uuid="a6a41a4f-4506-4639-8d7d-54209a3d274c" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierVolume}+$F{fevierVolume}+$F{marsVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="2000" y="0" width="200" height="20" uuid="4fe1113e-dc6c-45c6-ae62-9bf437216b0d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierValeur}+$F{fevierValeur}+$F{marsValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="2200" y="0" width="200" height="20" uuid="1e3b9bed-c01e-417d-82c1-3b588a263e7f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{avrilVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="2400" y="0" width="200" height="20" uuid="cdd9d1f4-22b5-4bb4-842f-9c296121237e" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{avrilValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="2600" y="0" width="200" height="20" uuid="5a47076b-0584-46ed-ad70-5322151eae9f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{maiVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="2800" y="0" width="200" height="20" uuid="ef31eaaf-b052-4841-9174-2adb0a32d95d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{maiValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="3000" y="0" width="200" height="20" uuid="075d5880-4dec-4ccf-9c57-d3c27b76da4d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juinVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="3200" y="0" width="200" height="20" uuid="26337217-d544-4e3d-84c9-3342e860368d" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juinValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="3400" y="0" width="200" height="20" uuid="e9c4bbaa-a935-4042-a960-ce5f6803068f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{avrilVolume}+$F{maiVolume}+$F{juinVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="3600" y="0" width="200" height="20" uuid="03610bfd-3a61-4d9d-ac45-2f3b8b5efd75" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{avrilValeur}+$F{maiValeur}+$F{juinValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="3800" y="0" width="200" height="20" uuid="fbdc8ac1-54f3-411c-8d78-e3f75b6182b1" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juilletVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="4000" y="0" width="200" height="20" uuid="358f25c6-a529-4db3-9099-4fac7295c69e" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juilletValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="4200" y="0" width="200" height="20" uuid="fc0a00ba-1b88-46a4-93cc-6778f97ff4f5" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{aoutVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="4400" y="0" width="200" height="20" uuid="90c2b6e1-6f11-4e3f-ae0d-d2151b860b0f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{aoutValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="4600" y="0" width="200" height="20" uuid="05004024-e93f-4641-ad64-fcdb107dfec3" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{septembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="4800" y="0" width="200" height="20" uuid="ca6bafb1-775a-4e91-b591-2f48fd2ba118" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{septembreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="5000" y="0" width="200" height="20" uuid="b8583cfe-9c8c-4113-9fe0-80f16ed378f8" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juilletVolume}+$F{aoutVolume}+$F{septembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="5200" y="0" width="200" height="20" uuid="490fa5d8-7b0a-4680-bc20-bc9936d890b7" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{juilletValeur}+$F{aoutValeur}+$F{septembreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="5400" y="0" width="200" height="20" uuid="9fb9a401-4906-4833-b3c5-3c891997275f" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{octobreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="5600" y="0" width="200" height="20" uuid="5aca18b8-42e6-40e6-92c7-910e308f3556" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{octobreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="5800" y="0" width="200" height="20" uuid="c66bc65b-2ddf-4a1e-b22e-3301c4b0da33" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{novembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="6000" y="0" width="200" height="20" uuid="647c3468-7299-46c6-998f-2dffb257d414" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{novembreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="6200" y="0" width="200" height="20" uuid="5b1ed919-b926-4347-a919-28e124bc7e2a" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{decembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="6400" y="0" width="200" height="20" uuid="f2a85e32-76ad-46bf-af0d-5ebbd4cbf43c" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{decembreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="6600" y="0" width="200" height="20" uuid="3fefa2cb-c08b-43d6-b3ee-1f5982ecdefe" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{octobreVolume}+$F{novembreVolume}+$F{decembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="6800" y="0" width="200" height="20" uuid="41abdb15-149d-4ecc-a475-4a2ce3b56e60" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{octobreValeur}+$F{novembreValeur}+$F{decembreValeur}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="7000" y="0" width="200" height="20" uuid="6c46ff7b-fda3-4ede-8dfd-5de4ca39d526" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierVolume}+$F{fevierVolume}+$F{marsVolume}+$F{avrilVolume}+$F{maiVolume}+$F{juinVolume}+$F{juilletVolume}+$F{aoutVolume}+$F{septembreVolume}+$F{octobreVolume}+$F{novembreVolume}+$F{decembreVolume}]]></textFieldExpression>
+    </textField>
+    <textField>
+        <reportElement x="7200" y="0" width="200" height="20" uuid="6c8b22b2-4ec4-4853-9e7d-44cef749aef3" />
+        <box><pen lineWidth="1"/></box>
+        <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="11" />
+        </textElement>
+        <textFieldExpression><![CDATA[$F{janvierValeur}+$F{fevierValeur}+$F{marsValeur}+$F{avrilValeur}+$F{maiValeur}+$F{juinValeur}+$F{juilletValeur}+$F{aoutValeur}+$F{septembreValeur}+$F{octobreValeur}+$F{novembreValeur}+$F{decembreValeur}]]></textFieldExpression>
+    </textField>
+            
+            
+        </band>
+    </detail>
+ 
+</jasperReport>

@@ -28,6 +28,10 @@ def remove_accents(input_str):
     return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
+def clean_brackets(variable):
+    return re.sub(r"\([^)]*\)|\([^)]*", "", variable)
+
+
 def to_variable(variable):
     variable = re.sub(r"\([^)]*\)|\([^)]*", "", variable).replace("_", " ").replace("-", "").strip().split(" ")
     capitalized_words = [word.capitalize() for word in variable[1:]]
