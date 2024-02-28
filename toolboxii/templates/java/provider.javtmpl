@@ -19,7 +19,7 @@ public class %(class_name)sProvider extends GenericProvider<%(main_report_fields
     private static Logger logger = Logger.getLogger(%(class_name)sProvider.class);
 
     @Autowired
-    private %(class_name)sHelper %(obj_name)sHelpers;
+    private %(class_name)sHelper %(obj_name)sHelper;
 
     @Override
     public Class<%(class_name)sRequestParameters> getParamBeanClass() {
@@ -40,7 +40,7 @@ public class %(class_name)sProvider extends GenericProvider<%(main_report_fields
             String JASPERSUBREPORTPATHS = Constantes.EDITION_MAQUETTE_PATH; // path to the subreport templates
             %(subreports)s
 
-            /* feed request paramaters and fields to the main template */
+            /* feed request fields and paramaters to the main template */
             setDs(templateFieldsList);
             setReportParams(templateParameters);
 

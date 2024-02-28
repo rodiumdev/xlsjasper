@@ -1,6 +1,6 @@
 
     <subreport>
-        <reportElement x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s">
+        <reportElement positionType="Float" x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s">
         	<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 		</reportElement>
         <dataSourceExpression><![CDATA[$P{%(data_source)s}]]></dataSourceExpression>

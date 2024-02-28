@@ -1,6 +1,6 @@
     
-    <detail>
+    <summary>
         <band height="%(height)s" splitType="Stretch">
-            %(detail)s
+            %(subreport)s
         </band>
-    </detail>
+    </summary>

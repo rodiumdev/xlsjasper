@@ -9,6 +9,17 @@ import bceao.commun.service.interfaces.edition.IBeansParams;
 public class SfmRequestParameters implements IBeansParams {
 	
 	private String ext;
+
+	//custom
+	private String report;
+    private Integer applimodule;
+    private Integer typefichier;
+    private String pays;
+    private Integer etablissement;
+    private String periodedebut;
+    private String periodefin;
+    private List<String> listProfils;
+    private String siteagent;
 	// todo: add other request parameters if necessary
 
 	@Override

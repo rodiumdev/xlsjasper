@@ -19,7 +19,7 @@ public class SfmProvider extends GenericProvider<BasicFields, SfmRequestParamete
     private static Logger logger = Logger.getLogger(SfmProvider.class);
 
     @Autowired
-    private SfmHelper sfmHelpers;
+    private SfmHelper sfmHelper;
 
     @Override
     public Class<SfmRequestParameters> getParamBeanClass() {
@@ -103,7 +103,7 @@ templateParameters.put("sfmTableSevenPartOneDataSource", new JRBeanCollectionDat
 
 
 
-            /* feed request paramaters and fields to the main template */
+            /* feed request fields and paramaters to the main template */
             setDs(templateFieldsList);
             setReportParams(templateParameters);
 

@@ -39,7 +39,8 @@ def main_report(name, component, parameters):
 
     report_width = parameters["width"] * len(parameters["columns"])
     report_header_height = parameters["height"] * len(table_structure)
-    report_detail_height = parameters["height"] * (len(subreports) + 1)
+    report_detail_height = parameters["height"]
+    report_summary_height = parameters["height"] * (len(subreports))
 
     # print(table_structure)
 
@@ -68,7 +69,10 @@ def main_report(name, component, parameters):
             sub_report_name, name, sub_report_component.get("field_class", "default"), parameters["output_path_java"]
         )
 
-    report_xml += build_details(fields_xml, subreports_xml, report_detail_height)
+    report_xml += build_details(fields_xml, report_detail_height)
+
+    if subreports_xml:
+        report_xml += build_summary(subreports_xml, report_summary_height)
 
     # to be reviewed
     output = template.template_to_string("report.jrtmpl") % {
@@ -77,7 +81,7 @@ def main_report(name, component, parameters):
         "fields": field_declarations_xml,
         "pageWidth": report_width + 80,
         "columnWidth": report_width + 40,
-        "pageHeight": report_header_height + report_detail_height + 40,
+        "pageHeight": report_header_height + report_detail_height + report_summary_height + 40,
         "reportUuid": uuid.uuid4(),
     }
 
@@ -92,8 +96,8 @@ def sub_report(subreport_name, width, height, y_index):
 
 def declare_jasper_subreport_parameters(subreport_name):
     return template.template_to_string("parameter-subreport.jrtmpl") % {
-        "name": utils.to_variable(utils.clean_brackets(subreport_name) + " Subreport"),
-        "nameSource": utils.to_variable(utils.clean_brackets(subreport_name) + " DataSource"),
+        "name": utils.to_variable(utils.clean_brackets(subreport_name)) + "Subreport",
+        "nameSource": utils.to_variable(utils.clean_brackets(subreport_name)) + "DataSource",
     }
 
 
@@ -112,12 +116,13 @@ def build_header(table_structure, row_height):
 
 
 # Detaisl
-def build_details(fields_xml, subreport_xml, height):
-    return template.template_to_string("report-detail.jrtmpl") % {
-        "detail": fields_xml,
-        "subreport": subreport_xml,
-        "height": height,
-    }
+def build_details(fields_xml, height):
+    return template.template_to_string("report-detail.jrtmpl") % {"detail": fields_xml, "height": height}
+
+
+# Summary
+def build_summary(subreport_xml, height):
+    return template.template_to_string("report-summary.jrtmpl") % {"subreport": subreport_xml, "height": height}
 
 
 # Fields
@@ -151,14 +156,14 @@ def declare_jasper_and_java_fields(table_structure, fields):
                 field_declarations_xml += template.template_to_string("field-string.jrtmpl") % {
                     "name": utils.to_variable(field_representation)
                 }
-                field_declarations_java += "private String " + utils.to_variable(field_representation) + "\n"
+                field_declarations_java += "private String " + utils.to_variable(field_representation) + ";\n"
         else:
             column_data = last_row[column_key]
             variable_name = utils.to_variable(
                 utils.clean_brackets(column_data["parent"]) + " " + utils.clean_brackets(column_data["value"])
             )
             field_declarations_xml += template.template_to_string("field-int.jrtmpl") % {"name": variable_name}
-            field_declarations_java += "private Integer " + utils.to_variable(variable_name) + "\n"
+            field_declarations_java += "private Integer " + variable_name + ";\n"
 
     return field_declarations_xml, field_declarations_java
 
@@ -220,8 +225,9 @@ def build_field_or_header_parameters(column_data, height, y_index):
 
     parameters["v_align"] = "Middle"
     parameters["h_align"] = "Center"
-    parameters["border"] = 1
+    parameters["border"] = 0.5
     parameters["font"] = 11
+    parameters["bgcolor"] = 'mode="Opaque" backcolor="#D6820D"' if y_index == 0 else ""
     parameters["uuidv4"] = uuid.uuid4()
 
     return parameters
@@ -230,7 +236,7 @@ def build_field_or_header_parameters(column_data, height, y_index):
 def build_subreport_parameters(name, width, height, y_index):
     parameters = {}
     parameters["x"] = 0
-    parameters["y"] = (y_index + 1) * height
+    parameters["y"] = (y_index) * height
     parameters["width"] = width
     parameters["height"] = height
     parameters["data_source"] = utils.to_variable(name) + "DataSource"
