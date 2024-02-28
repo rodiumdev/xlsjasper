@@ -26,6 +26,7 @@ def main_report(name, component, parameters):
     subreports_xml = ""
     parameters_declarations_xml = ""
     field_declarations_xml = ""
+    field_declarations_java = ""
 
     table_structure = get_tbl_structure(
         parameters["workbook"],
@@ -47,13 +48,25 @@ def main_report(name, component, parameters):
 
     if fields:
         fields_xml += build_fields(table_structure, fields, parameters["height"])
-        field_declarations_xml = declare_jasper_fields(table_structure, fields)
+        field_declarations_xml, field_declarations_java = declare_jasper_and_java_fields(table_structure, fields)
+        build_fields_model(
+            parameters["name_space"],
+            parameters["package"],
+            component.get("field_class"),
+            field_declarations_java,
+            parameters["output_path_java"],
+        )
 
     for sub_report_index, subreport in enumerate(subreports):
         sub_report_name = subreport.get("name", "subreport")
-        main_report(sub_report_name, subreport.get("components", {}), parameters)
+        sub_report_component = subreport.get("components", {})
+
+        main_report(sub_report_name, sub_report_component, parameters)
         subreports_xml += sub_report(sub_report_name, report_width, parameters["height"], sub_report_index)
         parameters_declarations_xml += declare_jasper_subreport_parameters(sub_report_name)
+        build_java_subreport(
+            sub_report_name, name, sub_report_component.get("field_class", "default"), parameters["output_path_java"]
+        )
 
     report_xml += build_details(fields_xml, subreports_xml, report_detail_height)
 
@@ -68,7 +81,7 @@ def main_report(name, component, parameters):
         "reportUuid": uuid.uuid4(),
     }
 
-    utils.print_to_file(parameters["output_path"] + "jasper" + "/" + name + ".jrxml", output)
+    utils.print_to_file(parameters["output_path_jasper"] + name + ".jrxml", output)
 
 
 # Subreports
@@ -100,7 +113,7 @@ def build_header(table_structure, row_height):
 
 # Detaisl
 def build_details(fields_xml, subreport_xml, height):
-    return template.template_to_string("report-detail-plus-subreport.jrtmpl") % {
+    return template.template_to_string("report-detail.jrtmpl") % {
         "detail": fields_xml,
         "subreport": subreport_xml,
         "height": height,
@@ -126,9 +139,10 @@ def build_fields(table_structure, fields, row_height):
     return fields_xml
 
 
-def declare_jasper_fields(table_structure, fields):
+def declare_jasper_and_java_fields(table_structure, fields):
     last_row = table_structure[len(table_structure) - 1]
     field_declarations_xml = ""
+    field_declarations_java = ""
 
     for column_key in last_row:
         if column_key in fields:
@@ -137,14 +151,16 @@ def declare_jasper_fields(table_structure, fields):
                 field_declarations_xml += template.template_to_string("field-string.jrtmpl") % {
                     "name": utils.to_variable(field_representation)
                 }
+                field_declarations_java += "private String " + utils.to_variable(field_representation) + "\n"
         else:
             column_data = last_row[column_key]
-            field_declarations_xml += template.template_to_string("field-int.jrtmpl") % {
-                "name": utils.to_variable(
-                    utils.clean_brackets(column_data["parent"]) + " " + utils.clean_brackets(column_data["value"])
-                )
-            }
-    return field_declarations_xml
+            variable_name = utils.to_variable(
+                utils.clean_brackets(column_data["parent"]) + " " + utils.clean_brackets(column_data["value"])
+            )
+            field_declarations_xml += template.template_to_string("field-int.jrtmpl") % {"name": variable_name}
+            field_declarations_java += "private Integer " + utils.to_variable(variable_name) + "\n"
+
+    return field_declarations_xml, field_declarations_java
 
 
 def make_fixed_field(column_data, field_representation, row_height, y_index):
@@ -336,3 +352,71 @@ def make_proper_structure(cleaned_row_list, parent, column_width):
                 cell_width = 0
         structure_row_list.append(structure_row)
     return structure_row_list
+
+
+# java
+def build_provider(name_space, name, main_field_name, path):
+    class_name = utils.to_class(name)
+    object_name = utils.to_variable(name)
+    template_provider = template.java_template_to_string("provider.javtmpl") % {
+        "name_space": name_space,
+        "package": name,
+        "class_name": class_name,
+        "obj_name": object_name,
+        "main_report_fields_class": utils.to_class(main_field_name),
+        "subreports": template.tmp_template_to_string(),
+    }
+
+    utils.print_to_file(path + class_name + "Provider.java", template_provider)
+
+
+def build_request_parameter_model(name_space, name, path):
+    class_name = utils.to_class(name)
+
+    request_parameters_model = template.java_template_to_string("model-request-param.javtmpl") % {
+        "name_space": name_space,
+        "package": name,
+        "class_name": class_name,
+    }
+
+    utils.print_to_file(path + "models/" + class_name + "RequestParameters.java", request_parameters_model)
+
+
+def build_java_subreport(name, main_report_name, field_name, path):
+    class_name = utils.to_class(name)
+    object_name = utils.to_variable(name)
+    template_subreport = template.java_template_to_string("subreport.javtmpl") % {
+        "main_report_name": utils.to_variable(main_report_name),
+        "template_name": name,
+        "class_name": class_name,
+        "obj_name": object_name,
+        "field_class": utils.to_class(field_name),
+    }
+
+    utils.append_to_file(path + "tmp.java", template_subreport)
+
+
+def build_fields_model(name_space, package, field_class, fields, path):
+    class_name = utils.to_class(field_class)
+    template_fields = template.java_template_to_string("model-fields.javtmpl") % {
+        "import_date_class": "",
+        "name_space": name_space,
+        "package": package,
+        "class_name": class_name,
+        "fields": fields,
+    }
+
+    utils.print_to_file(path + "models/" + class_name + "Fields.java", template_fields)
+
+
+def build_helper(name_space, name, path):
+    class_name = utils.to_class(name)
+    object_name = utils.to_variable(name)
+    template_provider = template.java_template_to_string("helper.javtmpl") % {
+        "name_space": name_space,
+        "package": name,
+        "class_name": class_name,
+        "obj_name": object_name,
+    }
+
+    utils.print_to_file(path + class_name + "Helper.java", template_provider)

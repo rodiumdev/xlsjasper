@@ -1,0 +1,4 @@
+JasperReport %(obj_name)sSubreport = GenerateurJasperReport.getPdfJasperReport(JASPERSUBREPORTPATHS, "%(template_name)s.jrxml"); // specify the subreport template
+List <%(field_class)sFields> %(obj_name)sFieldsList = %(main_report_name)sHelper.get%(field_class)sFields(); // todo: update parameter signature. list of fields to be passed to the subreport template
+templateParameters.put("%(obj_name)sSubreport", %(obj_name)sSubreport); 
+templateParameters.put("%(obj_name)sDataSource", new JRBeanCollectionDataSource(%(obj_name)sFieldsList)); 

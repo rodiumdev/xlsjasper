@@ -1,0 +1,24 @@
+package %(name_space)s.%(package)s;
+
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
+public final class %(class_name)sHelper {
+    private static Logger logger = Logger.getLogger(%(class_name)sHelper.class);
+
+    // todo: Autowire services used here
+
+    // todo: code methods here 
+
+
+
+}

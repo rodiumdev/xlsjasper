@@ -1,0 +1,52 @@
+package %(name_space)s.%(package)s;
+
+import java.util.HashMap;
+import java.util.Map;
+
+//import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import bceao.application.edition.ConstanteStatut;
+import bceao.commun.service.impl.provider.GenericProvider;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+@Component("%(obj_name)sProvider")
+public class %(class_name)sProvider extends GenericProvider<%(main_report_fields_class)sFields, %(class_name)sRequestParameters> {
+
+    private static Logger logger = Logger.getLogger(%(class_name)sProvider.class);
+
+    @Autowired
+    private %(class_name)sHelper %(obj_name)sHelpers;
+
+    @Override
+    public Class<%(class_name)sRequestParameters> getParamBeanClass() {
+        return %(class_name)sRequestParameters.class;
+    }
+
+    @Override
+    public void reportDataProducer(%(class_name)sRequestParameters requestParameters) {
+        try {
+
+            /* main report */       
+            Map<String, Object> templateParameters = new HashMap<>(); // parameter to be passed to the main report template            
+            // todo: add static paremeters to the report. for example: templateParameters.put("report_title","Sample reports");
+            
+            List<%(main_report_fields_class)sFields> templateFieldsList = %(obj_name)sHelper.get%(main_report_fields_class)sFields(); // todo: takes value of list to display in the tables body and must match the fields of the template.
+
+            /* subreports processing */
+            String JASPERSUBREPORTPATHS = Constantes.EDITION_MAQUETTE_PATH; // path to the subreport templates
+            %(subreports)s
+
+            /* feed request paramaters and fields to the main template */
+            setDs(templateFieldsList);
+            setReportParams(templateParameters);
+
+        } catch (Exception e) {
+            logger.error("Erreur dans le provider : " + e);
+        }
+    }
+
+}

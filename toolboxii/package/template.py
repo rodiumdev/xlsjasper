@@ -1,9 +1,11 @@
 import os
 from pathlib import Path
+from package import config
 
-XML_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/assets/templates/jasper/"
-JAVA_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/assets/templates/java/"
-TMP_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/temp/java/tmp.java"
+
+XML_PATH = config.XML_PATH
+JAVA_PATH = config.JAVA_PATH
+TMP_PATH = config.TMP_PATH
 
 
 def template_to_string(template):

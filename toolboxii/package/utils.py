@@ -23,6 +23,11 @@ def print_to_file(output_path, data):
         print(data, file=file_writer)
 
 
+def append_to_file(output_path, data):
+    with open(output_path, "a") as file_writer:
+        print("\n" + data + "\n", file=file_writer)
+
+
 def remove_accents(input_str):
     nfkd_form = unicodedata.normalize("NFKD", input_str)
     return "".join([c for c in nfkd_form if not unicodedata.combining(c)])

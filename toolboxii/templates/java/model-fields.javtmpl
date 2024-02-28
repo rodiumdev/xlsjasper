@@ -1,0 +1,13 @@
+package %(name_space)s.%(package)s.models;
+
+import lombok.Getter;
+import lombok.Setter;
+%(import_date_class)s
+
+@Getter
+@Setter
+public class %(class_name)sFields {
+	
+%(fields)s
+
+}

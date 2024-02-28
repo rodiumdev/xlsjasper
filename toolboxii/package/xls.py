@@ -1,7 +1,8 @@
 import openpyxl
 from unidecode import unidecode
+from package import config
 
-INPUT_PATH = "C:/Programming/scripts_queries/scripts/xlsjasper/input/"
+INPUT_PATH = config.INPUT_PATH
 
 
 def generate_column_range(start_column, end_column):

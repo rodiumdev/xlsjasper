@@ -1,0 +1,6 @@
+    
+    <columnHeader>
+        <band height="%(height)s" splitType="Stretch">
+            %(columnHeader)s
+        </band>
+    </columnHeader>
