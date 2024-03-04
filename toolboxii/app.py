@@ -37,7 +37,7 @@ def main(report):
                 print("building report ...")
                 report_name = report.get("name", "report")
                 main_report_field_class = component.get("field_class", "default")
-                jrxmlbuilder.main_report(report_name, component, parameters)
+                jrxmlbuilder.main_report(report_name, component, parameters, "report-columnHeader")
                 jrxmlbuilder.build_provider(NAME_SPACE, report_name, main_report_field_class, OUTPUT_PATH_JAVA)
                 jrxmlbuilder.build_helper(NAME_SPACE, report_name, OUTPUT_PATH_JAVA)
                 jrxmlbuilder.build_request_parameter_model(NAME_SPACE, report_name, OUTPUT_PATH_JAVA)
@@ -46,3 +46,8 @@ def main(report):
 
 
 main(reportConfig.report_definition)
+
+print("moving files to target application directory")
+SRC_DIR = config.JASPER_OUTPUT_PATH
+DEST_DIR = "C:/Programming/directories/cocotier/EDITON/MAQUETTE"
+utils.move_files(SRC_DIR, DEST_DIR)

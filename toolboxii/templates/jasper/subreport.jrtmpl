@@ -1,4 +1,3 @@
-
     <subreport>
         <reportElement positionType="Float" x="%(x)s" y="%(y)s" width="%(width)s" height="%(height)s" uuid="%(uuidv4)s">
         	<property name="com.jaspersoft.studio.unit.height" value="pixel"/>

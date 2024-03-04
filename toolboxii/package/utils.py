@@ -1,6 +1,9 @@
 import unicodedata
 import re
 
+import shutil
+import os
+
 
 def is_empty(structure):
     return not structure
@@ -47,3 +50,9 @@ def to_class(variable):
     variable = re.sub(r"\([^)]*\)|\([^)]*", "", variable).replace("_", " ").replace("-", "").strip().split(" ")
     capitalized_words = [word.capitalize() for word in variable[1:]]
     return remove_accents(variable[0].capitalize() + "".join(capitalized_words))
+
+
+def move_files(src_dir, dest_dir):
+    # getting all the files in the source directory
+    files = os.listdir(src_dir)
+    shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True)

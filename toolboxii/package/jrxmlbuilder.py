@@ -16,7 +16,7 @@ from package import template
 
 
 # Reports
-def main_report(name, component, parameters):
+def main_report(name, component, parameters, template_name):
     headers = component.get("headers", "")
     fields = component.get("fields", {})
     subreports = component.get("subreports", [])
@@ -45,7 +45,7 @@ def main_report(name, component, parameters):
     # print(table_structure)
 
     if headers:
-        report_xml += build_header(table_structure, parameters["height"])
+        report_xml += build_header(table_structure, parameters["height"], template_name)
 
     if fields:
         fields_xml += build_fields(table_structure, fields, parameters["height"])
@@ -62,7 +62,7 @@ def main_report(name, component, parameters):
         sub_report_name = subreport.get("name", "subreport")
         sub_report_component = subreport.get("components", {})
 
-        main_report(sub_report_name, sub_report_component, parameters)
+        main_report(sub_report_name, sub_report_component, parameters, "report-columnHeader-title")
         subreports_xml += sub_report(sub_report_name, report_width, parameters["height"], sub_report_index)
         parameters_declarations_xml += declare_jasper_subreport_parameters(sub_report_name)
         build_java_subreport(
@@ -81,7 +81,7 @@ def main_report(name, component, parameters):
         "fields": field_declarations_xml,
         "pageWidth": report_width + 80,
         "columnWidth": report_width + 40,
-        "pageHeight": report_header_height + report_detail_height + report_summary_height + 40,
+        "pageHeight": report_header_height + report_detail_height + report_summary_height,
         "reportUuid": uuid.uuid4(),
     }
 
@@ -102,14 +102,14 @@ def declare_jasper_subreport_parameters(subreport_name):
 
 
 # Headers
-def build_header(table_structure, row_height):
+def build_header(table_structure, row_height, template_name):
     headers_xml = ""
     for y_index, row in enumerate(table_structure):
         for column in row:
             column_data = row[column]
             parameters = build_field_or_header_parameters(column_data, row_height, y_index)
             headers_xml += template.template_to_string("value-static.jrtmpl") % parameters
-    return template.template_to_string("report-columnHeader.jrtmpl") % {
+    return template.template_to_string(template_name + ".jrtmpl") % {
         "columnHeader": headers_xml,
         "height": row_height * len(table_structure),
     }
